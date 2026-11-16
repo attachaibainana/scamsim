@@ -93,4 +93,4 @@ Assets/
 
 ## Credits and licence
 
-Code: MIT (see `LICENSE`). Fonts: Noto Sans Thai, SIL Open Font License (`Assets/Fonts/OFL.txt`). News items keep only a headline, our own summary, the source name and a link to the original report. The scammer persona and unit name are fictional; the prompt forbids real account numbers, links, people and agency names.
+Code: MIT (see `LICENSE`). Font: IBM Plex Sans Thai Looped (a looped Thai face with matching Latin), SIL Open Font License (`Assets/Fonts/OFL.txt`). News items keep only a headline, our own summary, the source name and a link to the original report. The scammer persona and unit name are fictional; the prompt forbids real account numbers, links, people and agency names.

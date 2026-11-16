@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c20940ca6b8250341a029b16868393f4
+guid: 93586384ee56a614cb19e56528eb9429
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Noto Sans Thai
+  - IBM Plex Sans Thai Looped
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

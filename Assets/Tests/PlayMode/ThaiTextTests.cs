@@ -46,6 +46,7 @@ namespace ScamSim.Tests
             VisualElement root = document.rootVisualElement;
             root.styleSheets.Add(styles);
             root.AddToClassList("scamsim-root");
+            root.style.flexDirection = FlexDirection.Column;
             root.style.paddingLeft = 40;
             root.style.paddingTop = 40;
 

@@ -10,7 +10,7 @@
     flex-grow: 1;
     flex-direction: row;
     justify-content: center;
-    -unity-font: url("/Assets/Fonts/NotoSansThai-Regular.ttf");
+    -unity-font: url("/Assets/Fonts/IBMPlexSansThaiLooped-Regular.ttf");
     font-size: 24px;
     color: rgb(245, 247, 250);
     background-color: rgb(16, 19, 33);
@@ -31,7 +31,7 @@
 }
 
 .bold {
-    -unity-font: url("/Assets/Fonts/NotoSansThai-Bold.ttf");
+    -unity-font: url("/Assets/Fonts/IBMPlexSansThaiLooped-Bold.ttf");
 }
 
 .title {
@@ -61,7 +61,7 @@
 /* ---- Buttons ----------------------------------------------------------------------------- */
 
 Button {
-    -unity-font: url("/Assets/Fonts/NotoSansThai-Bold.ttf");
+    -unity-font: url("/Assets/Fonts/IBMPlexSansThaiLooped-Bold.ttf");
     font-size: 26px;
     -unity-text-align: middle-center;
     white-space: normal;
@@ -93,7 +93,7 @@ Button:active {
     background-color: rgb(244, 240, 232);
     border-color: rgb(84, 90, 124);
     color: rgb(28, 30, 46);
-    -unity-font: url("/Assets/Fonts/NotoSansThai-Regular.ttf");
+    -unity-font: url("/Assets/Fonts/IBMPlexSansThaiLooped-Regular.ttf");
     font-size: 24px;
     -unity-text-align: middle-left;
     min-height: 64px;
@@ -110,6 +110,8 @@ Button:active {
 .intro {
     justify-content: center;
     align-items: stretch;
+    padding-top: 16px;
+    padding-bottom: 16px;
 }
 
 /* Characters are SVG (Assets/Art/Characters), drawn on a 200x220 canvas. */
@@ -120,9 +122,9 @@ Button:active {
 }
 
 .pip {
-    width: 200px;
-    height: 220px;
-    margin-bottom: 20px;
+    width: 150px;
+    height: 165px;
+    margin-bottom: 12px;
     background-image: url("/Assets/Art/Characters/pip.svg");
 }
 
@@ -303,7 +305,7 @@ Button:active {
 }
 
 .bubble.typing .bubble-text {
-    -unity-font: url("/Assets/Fonts/NotoSansThai-Bold.ttf");
+    -unity-font: url("/Assets/Fonts/IBMPlexSansThaiLooped-Bold.ttf");
     font-size: 30px;
 }
 
@@ -353,7 +355,7 @@ Button:active {
     background-color: rgb(244, 240, 232);
     color: rgb(28, 30, 46);
     padding: 6px 14px;
-    -unity-font: url("/Assets/Fonts/NotoSansThai-Regular.ttf");
+    -unity-font: url("/Assets/Fonts/IBMPlexSansThaiLooped-Regular.ttf");
 }
 
 .send-button {
@@ -498,7 +500,7 @@ Button:active {
 .news-tag.type-other { background-color: rgb(200, 204, 220); border-color: rgb(110, 116, 140); }
 
 .news-headline {
-    -unity-font: url("/Assets/Fonts/NotoSansThai-Bold.ttf");
+    -unity-font: url("/Assets/Fonts/IBMPlexSansThaiLooped-Bold.ttf");
     font-size: 26px;
     white-space: normal;
     margin: 8px 0 4px 0;
