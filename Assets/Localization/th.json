@@ -1,0 +1,20 @@
+{
+  "intro.title": "ScamSim — ฝึกรับมือมิจฉาชีพ",
+  "intro.start": "เริ่มฝึก",
+
+  "call.hangup": "วางสาย",
+  "call.type_placeholder": "พิมพ์คำตอบเอง…",
+  "call.dropped": "สายหลุด",
+  "call.retry": "ลองใหม่",
+
+  "debrief.result.scammed": "โดนหลอก",
+  "debrief.result.escaped": "รอด",
+  "debrief.result.hung_up": "วางสายทัน",
+  "debrief.play_again": "เล่นอีกครั้ง",
+  "debrief.export_csv": "Export CSV",
+
+  "news.title": "สถานการณ์ล่าสุด",
+  "news.read_source": "อ่านต้นฉบับ",
+  "news.practice": "ฝึกรับมือเหตุการณ์นี้",
+  "news.coming_soon": "เร็วๆ นี้"
+}
