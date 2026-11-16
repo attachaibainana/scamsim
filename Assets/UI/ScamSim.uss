@@ -112,53 +112,18 @@ Button:active {
     align-items: stretch;
 }
 
-.pip {
+/* Characters are SVG (Assets/Art/Characters), drawn on a 200x220 canvas. */
+.character {
+    flex-shrink: 0;
     align-self: center;
-    width: 180px;
-    height: 200px;
-    margin-bottom: 24px;
+    -unity-background-scale-mode: scale-to-fit;
 }
 
-.pip-antenna {
-    position: absolute;
-    top: 0;
-    width: 30px;
-    height: 30px;
-    border-radius: 15px;
-    border-width: 4px;
-    border-color: rgb(32, 34, 52);
-    background-color: rgb(255, 200, 61);
-}
-
-.pip-antenna.left {
-    left: 34px;
-}
-
-.pip-antenna.right {
-    right: 34px;
-}
-
-.pip-body {
-    position: absolute;
-    top: 36px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 64px;
-    border-width: 4px;
-    border-color: rgb(32, 34, 52);
-    background-color: rgb(118, 226, 196);
-    flex-direction: row;
-    justify-content: center;
-    padding-top: 60px;
-}
-
-.pip-eye {
-    width: 18px;
-    height: 26px;
-    border-radius: 9px;
-    margin: 0 22px;
-    background-color: rgb(32, 34, 52);
+.pip {
+    width: 200px;
+    height: 220px;
+    margin-bottom: 20px;
+    background-image: url("/Assets/Art/Characters/pip.svg");
 }
 
 /* ---- Call -------------------------------------------------------------------------------- */
@@ -210,6 +175,18 @@ Button:active {
     border-width: 4px;
     border-color: rgb(255, 72, 72);
     background-color: rgb(10, 10, 14);
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* The caller: the scammer's shape in black with a red edge, no face. */
+.avatar-figure {
+    width: 80%;
+    height: 80%;
+    margin-top: 10%;
+    background-image: url("/Assets/Art/Characters/pip_silhouette.svg");
+    -unity-background-scale-mode: scale-to-fit;
 }
 
 .avatar.big {
@@ -557,6 +534,20 @@ Button:active {
 
 .debrief {
     padding-bottom: 48px;
+}
+
+.debrief-character {
+    width: 150px;
+    height: 165px;
+    margin-bottom: 12px;
+}
+
+.debrief-character.player {
+    background-image: url("/Assets/Art/Characters/pip.svg");
+}
+
+.debrief-character.scammer {
+    background-image: url("/Assets/Art/Characters/pip_scammer.svg");
 }
 
 .lost {

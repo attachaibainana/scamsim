@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" width="200" height="220">
+  <!-- PIP, the player's character (from the user's concept "A PIP"). Flat fills, one outline width. -->
+  <g stroke="#22243A" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <!-- antennae -->
+    <path d="M78 58 L64 26" fill="none"/>
+    <path d="M122 58 L136 26" fill="none"/>
+    <circle cx="62" cy="22" r="12" fill="#FFC83D"/>
+    <circle cx="138" cy="22" r="12" fill="#FFC83D"/>
+    <!-- arms and feet sit behind the body -->
+    <ellipse cx="30" cy="132" rx="15" ry="22" fill="#76E2C4" transform="rotate(20 30 132)"/>
+    <ellipse cx="170" cy="132" rx="15" ry="22" fill="#76E2C4" transform="rotate(-20 170 132)"/>
+    <rect x="58" y="172" width="32" height="30" rx="13" fill="#76E2C4"/>
+    <rect x="110" y="172" width="32" height="30" rx="13" fill="#76E2C4"/>
+    <!-- body -->
+    <rect x="32" y="52" width="136" height="136" rx="50" fill="#76E2C4"/>
+    <!-- heart -->
+    <path d="M100 172 C82 160 76 146 86 138 C93 133 99 137 100 142 C101 137 107 133 114 138 C124 146 118 160 100 172 Z" fill="#FF7A8A"/>
+  </g>
+  <!-- flat highlights and face (no outline) -->
+  <ellipse cx="66" cy="78" rx="14" ry="8" fill="#FFFFFF" opacity="0.55" transform="rotate(-25 66 78)"/>
+  <circle cx="58" cy="18" r="4" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="134" cy="18" r="4" fill="#FFFFFF" opacity="0.7"/>
+  <ellipse cx="80" cy="108" rx="7.5" ry="11" fill="#22243A"/>
+  <ellipse cx="120" cy="108" rx="7.5" ry="11" fill="#22243A"/>
+  <circle cx="82" cy="103" r="2.5" fill="#FFFFFF"/>
+  <circle cx="122" cy="103" r="2.5" fill="#FFFFFF"/>
+  <ellipse cx="60" cy="126" rx="11" ry="6" fill="#FF9AA2"/>
+  <ellipse cx="140" cy="126" rx="11" ry="6" fill="#FF9AA2"/>
+</svg>

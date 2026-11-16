@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using ScamSim.Core;
+using Unity.VectorGraphics.Editor;
+using ViewportOptions = Unity.VectorGraphics.ViewportOptions;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
@@ -33,6 +35,13 @@ namespace ScamSim.EditorTools
         public const string LessonsPromptPath = "Assets/Prompts/lessons.txt";
         public const string ScenePath = "Assets/Scenes/Main.unity";
         public const string DefaultWindowsOutput = "Builds/Windows/ScamSim.exe";
+
+        public static readonly string[] CharacterArt =
+        {
+            "Assets/Art/Characters/pip.svg",
+            "Assets/Art/Characters/pip_scammer.svg",
+            "Assets/Art/Characters/pip_silhouette.svg"
+        };
 
         public const string ProductName = "ScamSim";
         public const string Version = "0.1.0";
@@ -69,6 +78,30 @@ namespace ScamSim.EditorTools
             return settings;
         }
 
+        /// <summary>
+        /// Character art is SVG (PRD 2.7) imported as UI Toolkit vector images, so it stays sharp at any
+        /// screen size. The whole viewBox is kept, so every character lines up the same way.
+        /// </summary>
+        [MenuItem("ScamSim/Import Character Art")]
+        public static void EnsureCharacterImport()
+        {
+            foreach (string path in CharacterArt)
+            {
+                var importer = AssetImporter.GetAtPath(path) as SVGImporter;
+                if (importer == null) throw new IOException("No SVG importer for " + path);
+                if (importer.SvgType == SVGType.VectorImage && importer.ViewportOptions == ViewportOptions.PreserveViewport
+                    && importer.PreserveViewport) continue;
+
+                importer.SvgType = SVGType.VectorImage;
+                importer.ViewportOptions = ViewportOptions.PreserveViewport;
+                importer.PreserveViewport = true;
+                EditorUtility.SetDirty(importer);
+                importer.SaveAndReimport();
+                Debug.Log("[ProjectSetup] " + path + ": " + importer.SvgType + ", " + importer.ViewportOptions
+                          + " (" + (int)importer.ViewportOptions + "), preserve " + importer.PreserveViewport);
+            }
+        }
+
         [MenuItem("ScamSim/Create Main Scene")]
         public static void CreateMainScene()
         {
@@ -78,6 +111,7 @@ namespace ScamSim.EditorTools
             PlayerSettings.productName = ProductName;
             PlayerSettings.bundleVersion = Version;
 
+            EnsureCharacterImport();
             EnsurePanelSettings();
             Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
 

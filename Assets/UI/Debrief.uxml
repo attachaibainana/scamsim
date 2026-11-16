@@ -1,6 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:ScrollView name="debrief-scroll" class="debrief-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden">
         <ui:VisualElement name="debrief" class="screen debrief">
+            <ui:VisualElement name="debrief-character" class="character debrief-character" />
             <ui:Label name="result" class="result-title bold" />
             <ui:Label name="result-detail" class="body" />
             <ui:Label name="lost" class="lost body" />

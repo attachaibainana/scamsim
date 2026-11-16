@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" width="200" height="220">
+  <!-- The unknown caller: the scammer's outline as a black shape with a glowing red edge (PRD 2.7: no face). -->
+  <g fill="#0A0A0E" stroke="#FF4848" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M78 58 L64 26" fill="none"/>
+    <path d="M122 58 L136 26" fill="none"/>
+    <circle cx="62" cy="22" r="12"/>
+    <circle cx="138" cy="22" r="12"/>
+    <ellipse cx="30" cy="132" rx="15" ry="22" transform="rotate(20 30 132)"/>
+    <ellipse cx="170" cy="132" rx="15" ry="22" transform="rotate(-20 170 132)"/>
+    <rect x="58" y="172" width="32" height="30" rx="13"/>
+    <rect x="110" y="172" width="32" height="30" rx="13"/>
+    <rect x="32" y="52" width="136" height="136" rx="50"/>
+    <path d="M40 104 C40 60 160 60 160 104" fill="none"/>
+    <rect x="26" y="96" width="22" height="34" rx="9"/>
+    <rect x="152" y="96" width="22" height="34" rx="9"/>
+    <path d="M160 128 C160 150 140 156 122 152" fill="none"/>
+    <circle cx="118" cy="152" r="7"/>
+  </g>
+</svg>

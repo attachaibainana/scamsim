@@ -3,7 +3,9 @@
         <ui:VisualElement name="ringing" class="ringing">
             <ui:Label class="caption" text="@call.incoming" />
             <ui:VisualElement class="avatar-glow big">
-                <ui:VisualElement class="avatar big" />
+                <ui:VisualElement class="avatar big">
+                    <ui:VisualElement class="avatar-figure" />
+                </ui:VisualElement>
             </ui:VisualElement>
             <ui:Label class="caller bold" text="@call.caller_unknown" />
             <ui:VisualElement class="ring-buttons">
@@ -15,7 +17,9 @@
         <ui:VisualElement name="in-call" class="in-call hidden">
             <ui:VisualElement class="call-header">
                 <ui:VisualElement class="avatar-glow">
-                    <ui:VisualElement class="avatar" />
+                    <ui:VisualElement class="avatar">
+                        <ui:VisualElement class="avatar-figure" />
+                    </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:Label class="caller bold" text="@call.caller_unknown" />
                 <ui:Button name="hangup" class="hangup-button" text="@call.hangup" />
