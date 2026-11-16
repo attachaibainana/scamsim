@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ScamSim.Core;
 using ScamSim.Logging;
+using ScamSim.Platform;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -63,8 +64,6 @@ namespace ScamSim.UI
             };
             _exportCsv.clicked += ExportCsv;
             _openFolder.clicked += OpenFolder;
-            // The browser download for WebGL comes with the WebGL build; until then the button stays hidden there.
-            UiKit.Show(_exportCsv, Application.platform != RuntimePlatform.WebGLPlayer);
 
             if (call.IsConcluded) Fill(call.Logger.Latest);
             else
@@ -104,6 +103,7 @@ namespace ScamSim.UI
             foreach (DebriefItem item in summary.Items) _timeline.Add(TimelineItem(item));
 
             if (_call.LastSaveError != null) _logPath.text = Loc.T("debrief.log_failed", _call.LastSaveError);
+            else if (WebBridge.IsWeb) _logPath.text = Loc.T("debrief.log_saved_web");
             else if (!string.IsNullOrEmpty(_call.Logger.FilePath)) _logPath.text = Loc.T("debrief.log_saved", _call.Logger.FilePath);
             else _logPath.text = "";
 
@@ -171,6 +171,23 @@ namespace ScamSim.UI
 
         void ExportCsv()
         {
+            // A web page cannot write next to a log file the player can reach: hand the CSV to the browser.
+            if (WebBridge.IsWeb)
+            {
+                byte[] bytes;
+                string buildDetail;
+                CsvExportError built = CsvExport.TryBuild(_call.Logger.Latest, out bytes, out buildDetail);
+                string name = CsvExport.FileNameFor(_call.Logger.FilePath);
+                if (built == CsvExportError.None && WebBridge.Download(name, "text/csv", bytes))
+                {
+                    _exportStatus.text = Loc.T("debrief.export_downloaded", name);
+                    return;
+                }
+                _exportStatus.text = Loc.T(built == CsvExportError.NoLog ? "debrief.export_failed_nolog" : "debrief.export_failed_download");
+                if (buildDetail != null) Debug.LogWarning("[ScamSim] CSV export failed: " + buildDetail);
+                return;
+            }
+
             string csvPath;
             string detail;
             CsvExportError error = CsvExport.TrySave(_call.Logger.Latest, _call.Logger.FilePath, out csvPath, out detail);

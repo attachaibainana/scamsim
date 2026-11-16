@@ -2,6 +2,7 @@ using System;
 using ScamSim.LLM;
 using ScamSim.Logging;
 using ScamSim.News;
+using ScamSim.Platform;
 using ScamSim.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -81,6 +82,19 @@ namespace ScamSim.Core
             _scripted = new ScriptedProvider(scenario.text);
             _provider = CreateProvider();
             LogDirectory = LogLocation.Resolve();
+            if (WebBridge.IsWeb)
+            {
+                SessionLogger.FileWritten += OnLogWritten;
+                if (LogLocation.PruneOldSessions(LogDirectory, WebLogsToKeep) > 0) WebBridge.SyncFiles();
+            }
+        }
+
+        /// <summary>Session logs kept in browser storage on the web build (see LogLocation.PruneOldSessions).</summary>
+        const int WebLogsToKeep = 20;
+
+        static void OnLogWritten(string path)
+        {
+            WebBridge.SyncFiles();
         }
 
         /// <summary>
@@ -120,6 +134,7 @@ namespace ScamSim.Core
 
         void OnDestroy()
         {
+            SessionLogger.FileWritten -= OnLogWritten;
             CloseScreen();
             if (Call != null) Call.StateChanged -= OnCallStateChanged;
         }

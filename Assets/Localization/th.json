@@ -49,6 +49,9 @@
   "debrief.export_failed_nolog": "บันทึก CSV ไม่สำเร็จ เพราะไม่มีไฟล์บันทึกของสายนี้",
   "debrief.lost_unnamed": "มิจฉาชีพบอกว่าได้สิ่งที่ต้องการไปแล้ว",
   "debrief.log_saved": "บันทึกผลไว้ที่ {0}",
+  "debrief.log_saved_web": "บันทึกผลไว้ในเบราว์เซอร์นี้ กด Export CSV เพื่อดาวน์โหลดเก็บไว้",
+  "debrief.export_downloaded": "ดาวน์โหลด {0} แล้ว",
+  "debrief.export_failed_download": "ดาวน์โหลด CSV ไม่สำเร็จ ลองอีกครั้ง",
   "debrief.log_failed": "บันทึกผลไม่สำเร็จ: {0}",
 
   "news.title": "สถานการณ์ล่าสุด",

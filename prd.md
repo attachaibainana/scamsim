@@ -41,7 +41,9 @@ v0.1 นี้พิสูจน์แค่ 3 อย่าง:
 
 ### 2.2 LLM integration
 - Provider: Anthropic API (Claude Sonnet) ผ่าน `UnityWebRequest` — ห้ามใช้ SDK ที่ไม่รองรับ WebGL
-- API key อ่านจาก `StreamingAssets/config.json` (gitignored) — มี `config.example.json` ให้
+  - *(อัปเดต 2026-11-16)* model `claude-sonnet-5-5`, header `anthropic-version: 2026-10-21`, structured outputs (`output_config.format` แบบ `json_schema`), `effort` ตั้งได้ (ค่าเริ่ม `low`), เปิด refusal fallback (`fallbacks: "default"`) — ถ้า model ปฏิเสธ เกมใช้ scripted line และบันทึกเหตุผลใน `provider_error`
+- API key อ่านจาก `config.json` ที่ **root โปรเจกต์** (ใน build วางข้าง .exe) — gitignored — มี `config.example.json` ให้
+  - *(อัปเดต 2026-11-16)* ย้ายออกจาก `StreamingAssets` เพราะ Unity คัดลอกโฟลเดอร์นั้นเข้าทุก build (key จะหลุดไปกับเกม) — มี build guard (`SecretGuard`) กันไว้ · WebGL ไม่อ่าน config เลย เล่น offline เสมอ
 - ทุก response ต้องเป็น **JSON strict** ตาม schema:
   ```json
   {
@@ -67,8 +69,11 @@ v0.1 นี้พิสูจน์แค่ 3 อย่าง:
 
 ### 2.4 Logging (สำคัญที่สุดสำหรับงานวิจัย)
 - ทุก session → 1 ไฟล์ `Logs/session_{timestamp}.json`
+  - *(อัปเดต 2026-11-16)* ชื่อจริงเป็น `session_{timestamp}_{session_id}.json` (กัน 2 session ในวินาทีเดียวกันทับกัน) · ที่เก็บ: Editor `Logs/Sessions/` · Windows build `Logs/` ข้าง .exe (เขียนไม่ได้ → persistentDataPath) · WebGL ในเบราว์เซอร์ (ดึงออกด้วย Export CSV)
 - บันทึกต่อ turn: `turn_index, timestamp, scammer_line, pressure_level, red_flags, player_options, player_choice (index หรือ "free"), player_text, response_time_ms, goal_progress`
+  - *(เพิ่ม 2026-11-16)* `option_display_order` (ตัวเลือกไหนอยู่ช่องไหนบนจอ), `player_stance` + `player_stance_source`, `pii_redacted`, `red_flags_noticed`, `line_shown` (false = ผู้เล่นวางสายก่อนบรรทัดนี้ขึ้นจอ ไม่นับ red flag), `source` (llm / scripted / fallback), `provider_error`, `provider_attempts`
 - บันทึกต่อ session: `session_id, scenario_id, start/end time, end_reason, total_turns, red_flags_total, red_flags_player_reacted_to`
+  - *(เพิ่ม 2026-11-16)* `app_version, provider, model_id, prompt_version, effort, option_shuffle_seed, ended_by, lessons` · `temperature` เป็น null เสมอ (ดูข้อ 3)
 - มีปุ่ม "Export CSV" ใน debrief → flatten ทุก turn เป็นแถว
 - **ห้ามเก็บข้อมูลส่วนตัวจริงของผู้เล่น** — ถ้าผู้เล่นพิมพ์เลข 13 หลักหรือเบอร์โทรจริง ให้ mask เป็น `[REDACTED]` ก่อน log และก่อนส่ง LLM
 
@@ -156,7 +161,8 @@ v0.1 นี้พิสูจน์แค่ 3 อย่าง:
 - **ภาษา UI**: ไทยทั้งหมด, string อยู่ใน `Localization/th.json` เพื่อแปล EN ทีหลัง
 - **ไม่มี backend** — ทุกอย่าง local
 - **Offline fallback**: ถ้าไม่มี API key ให้รัน scripted scenario (branching tree 3 ระดับ) เพื่อให้ demo ได้เสมอ
-- **Reproducibility**: ตั้ง `temperature` ได้จาก config, บันทึก model id + prompt version ลง log ทุก session
+- **Reproducibility**: ~~ตั้ง `temperature` ได้จาก config~~ ตั้ง `effort` ได้จาก config, บันทึก model id + prompt version + effort ลง log ทุก session
+  - *(อัปเดต 2026-11-16, ผู้ใช้ตัดสินใจ)* Claude API เวอร์ชัน 2026-10-21 และ Claude Sonnet 5.5 ตอบ 400 เมื่อส่ง temperature/top_p/top_k จึงตัด temperature ออก
 
 ---
 
@@ -187,8 +193,8 @@ Assets/
     police_scripted.json    — offline tree
   Localization/th.json
   StreamingAssets/
-    config.example.json
     news.json             — 10 ข่าวทำมือ (v0.1)
+config.example.json          — (อัปเดต 2026-11-16) อยู่ที่ root; config.json จริงก็อยู่ที่ root และ gitignored
 Logs/                        — gitignored
 ```
 

@@ -88,6 +88,12 @@ namespace ScamSim.Logging
 
         const int MaxIdCharsInFileName = 40;
 
+        /// <summary>
+        /// Raised after a log file was written. The WebGL build uses it to flush the browser's file
+        /// system to IndexedDB, so the log survives a reload.
+        /// </summary>
+        public static event Action<string> FileWritten;
+
         readonly string _directory;
 
         public SessionLogger(SessionMeta meta, string directory)
@@ -215,6 +221,17 @@ namespace ScamSim.Logging
             catch (Exception e)
             {
                 error = e.Message;
+                return Latest;
+            }
+
+            // Outside the try above: a listener failing does not mean the log failed to save.
+            try
+            {
+                if (FileWritten != null) FileWritten(FilePath);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogWarning("[ScamSim] After saving the log: " + e.Message);
             }
             return Latest;
         }

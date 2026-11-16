@@ -29,6 +29,33 @@ namespace ScamSim.Logging
             return Path.Combine(Application.persistentDataPath, "Logs");
         }
 
+        /// <summary>
+        /// Deletes all but the newest <paramref name="keep"/> session logs in a folder. Only for the web
+        /// build: there the logs sit in browser storage that nobody can reach later (the player exports
+        /// the current call as CSV), and every file is loaded into memory on each page load. Desktop
+        /// logs are research data and are never pruned. Returns how many files were deleted.
+        /// </summary>
+        public static int PruneOldSessions(string directory, int keep)
+        {
+            if (string.IsNullOrEmpty(directory) || !Directory.Exists(directory)) return 0;
+            try
+            {
+                var files = new System.Collections.Generic.List<FileInfo>(new DirectoryInfo(directory).GetFiles("session_*.json"));
+                files.Sort((a, b) => b.LastWriteTimeUtc.CompareTo(a.LastWriteTimeUtc));
+                int deleted = 0;
+                for (int i = Math.Max(keep, 0); i < files.Count; i++)
+                {
+                    files[i].Delete();
+                    deleted++;
+                }
+                return deleted;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+
         public static bool IsWritable(string directory)
         {
             try

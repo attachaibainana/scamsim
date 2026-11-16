@@ -46,8 +46,14 @@ namespace ScamSim.EditorTools
         public const string ProductName = "ScamSim";
         public const string Version = "0.1.0";
 
-        /// <summary>Screens are laid out for a 1920x1080 window and scaled by height, so text keeps its size.</summary>
-        static readonly Vector2Int ReferenceResolution = new Vector2Int(1920, 1080);
+        /// <summary>
+        /// Screens are laid out for an 800px-high window and scaled by height. A 1080p screen shows
+        /// everything 1.35x larger (the smallest 18px text becomes 24px), which older players need;
+        /// a 768px laptop browser still keeps it at about the PRD's 18px minimum.
+        /// </summary>
+        static readonly Vector2Int ReferenceResolution = new Vector2Int(1280, 800);
+
+        public const string DefaultWebGLOutput = "Builds/WebGL";
         static readonly Color Background = new Color32(16, 19, 33, 255);
 
         [MenuItem("ScamSim/Create UI Settings")]
@@ -160,12 +166,30 @@ namespace ScamSim.EditorTools
         /// <summary>Windows build of Main.unity. Honors -buildOutput from `unity build -o`.</summary>
         public static void BuildWindows()
         {
-            string output = ArgumentAfter("-buildOutput") ?? DefaultWindowsOutput;
+            Build(BuildTarget.StandaloneWindows64, ArgumentAfter("-buildOutput") ?? DefaultWindowsOutput);
+        }
+
+        /// <summary>
+        /// WebGL build for the demo link (PRD 3). This method owns the web compression settings:
+        /// Gzip with the decompression fallback, so the files work on any static host without special
+        /// server headers (GitHub Pages included). The canvas size and page template are not set yet
+        /// (to do with the first tested WebGL build). The web build never reads config.json, so it
+        /// always plays the offline scenario.
+        /// </summary>
+        public static void BuildWebGL()
+        {
+            PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+            PlayerSettings.WebGL.decompressionFallback = true;
+            Build(BuildTarget.WebGL, ArgumentAfter("-buildOutput") ?? DefaultWebGLOutput);
+        }
+
+        static void Build(BuildTarget target, string output)
+        {
             var options = new BuildPlayerOptions
             {
                 scenes = new[] { ScenePath },
                 locationPathName = output,
-                target = BuildTarget.StandaloneWindows64,
+                target = target,
                 options = BuildOptions.None
             };
 

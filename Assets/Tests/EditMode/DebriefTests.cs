@@ -108,8 +108,49 @@ namespace ScamSim.Tests
         }
     }
 
+    public class LogLocationTests
+    {
+        [Test]
+        public void PruningKeepsTheNewestSessionsAndNothingElse()
+        {
+            string directory = TestSessions.TempDirectory();
+            try
+            {
+                Directory.CreateDirectory(directory);
+                for (int i = 0; i < 5; i++)
+                {
+                    string path = Path.Combine(directory, "session_" + i + ".json");
+                    File.WriteAllText(path, "{}");
+                    File.SetLastWriteTimeUtc(path, new System.DateTime(2026, 1, 1).AddMinutes(i));
+                }
+                File.WriteAllText(Path.Combine(directory, "notes.txt"), "keep me");
+
+                Assert.AreEqual(3, LogLocation.PruneOldSessions(directory, 2));
+                CollectionAssert.AreEquivalent(new[] { "session_3.json", "session_4.json", "notes.txt" },
+                    System.Array.ConvertAll(Directory.GetFiles(directory), Path.GetFileName));
+                Assert.AreEqual(0, LogLocation.PruneOldSessions(Path.Combine(directory, "missing"), 2));
+            }
+            finally
+            {
+                if (Directory.Exists(directory)) Directory.Delete(directory, true);
+            }
+        }
+    }
+
     public class CsvExportTests
     {
+        [Test]
+        public void TheCsvIsNamedAfterItsLog()
+        {
+            Assert.AreEqual("session_x.csv", CsvExport.FileNameFor(Path.Combine("a", "session_x.json")));
+            Assert.AreEqual(CsvExport.FallbackFileName, CsvExport.FileNameFor(null));
+            byte[] bytes;
+            string detail;
+            Assert.AreEqual(CsvExportError.None, CsvExport.TryBuild(TestSessions.Play(Stance.Resist), out bytes, out detail));
+            Assert.Greater(bytes.Length, 3);
+            Assert.AreEqual(CsvExportError.NoLog, CsvExport.TryBuild(null, out bytes, out detail));
+        }
+
         [Test]
         public void WritesTheCsvNextToTheJsonLog()
         {

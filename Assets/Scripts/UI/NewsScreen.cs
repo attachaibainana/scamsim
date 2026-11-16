@@ -116,6 +116,8 @@ namespace ScamSim.UI
 
             var actions = new VisualElement();
             actions.AddToClassList("button-row");
+            // Works with mouse, touch and keyboard. On WebGL a popup blocker may still stop it; that is
+            // checked with the first tested WebGL build.
             Button read = UiKit.MakeButton(Loc.T("news.read_source"), "secondary-button", () => Application.OpenURL(item.SourceUrl));
             read.name = "read-source";
             actions.Add(read);
