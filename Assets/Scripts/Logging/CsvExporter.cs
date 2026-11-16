@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ScamSim.Logging
 {
@@ -17,9 +18,9 @@ namespace ScamSim.Logging
             "option_shuffle_seed",
             "start_time", "end_time", "end_reason", "ended_by", "total_turns",
             "red_flags_total", "red_flags_player_reacted_to",
-            "turn_index", "timestamp", "source", "scammer_line", "pressure_level",
+            "turn_index", "timestamp", "source", "line_shown", "scammer_line", "pressure_level",
             "red_flags", "red_flag_count", "red_flags_noticed",
-            "player_options", "player_choice", "player_stance", "player_stance_source", "player_text",
+            "player_options", "option_display_order", "player_choice", "player_stance", "player_stance_source", "player_text",
             "pii_redacted", "response_time_ms",
             "goal_id_number", "goal_transfer", "goal_link_click"
         };
@@ -45,12 +46,14 @@ namespace ScamSim.Logging
                 row.Add(turn.TurnIndex.ToString(CultureInfo.InvariantCulture));
                 row.Add(turn.Timestamp);
                 row.Add(turn.Source);
+                row.Add(Bool(turn.LineShown));
                 row.Add(turn.ScammerLine);
                 row.Add(turn.PressureLevel.ToString(CultureInfo.InvariantCulture));
                 row.Add(string.Join(ListSeparator, turn.RedFlags));
                 row.Add(turn.RedFlags.Count.ToString(CultureInfo.InvariantCulture));
                 row.Add(Bool(turn.RedFlagsNoticed));
                 row.Add(string.Join(ListSeparator, turn.PlayerOptions));
+                row.Add(turn.OptionDisplayOrder == null ? "" : string.Join(ListSeparator, turn.OptionDisplayOrder));
                 row.Add(turn.PlayerChoice == null ? "" : System.Convert.ToString(turn.PlayerChoice, CultureInfo.InvariantCulture));
                 row.Add(turn.PlayerStance);
                 row.Add(turn.PlayerStanceSource);
@@ -77,15 +80,18 @@ namespace ScamSim.Logging
             return bytes;
         }
 
+        static readonly Regex PlainNumber = new Regex(@"^-?[0-9]+(\.[0-9]+)?$");
+
         /// <summary>
         /// Quotes a field for CSV. A field that starts with = + - @ (or tab / CR) gets a leading
         /// apostrophe, because spreadsheet apps would otherwise run typed player text as a formula.
-        /// Analysts reading the CSV with code should strip that one apostrophe.
+        /// A plain number such as -42 is left alone so numeric columns stay numeric.
+        /// Analysts reading the CSV with code should strip that one apostrophe from text fields.
         /// </summary>
         public static string Escape(string field)
         {
             if (string.IsNullOrEmpty(field)) return "";
-            if (StartsFormula(field[0])) field = "'" + field;
+            if (StartsFormula(field[0]) && !PlainNumber.IsMatch(field)) field = "'" + field;
 
             bool mustQuote = field.IndexOfAny(new[] { ',', '"', '\n', '\r' }) >= 0
                              || field.StartsWith(" ") || field.EndsWith(" ");

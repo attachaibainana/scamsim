@@ -1,0 +1,45 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="call" class="screen call pressure-2">
+        <ui:VisualElement name="ringing" class="ringing">
+            <ui:Label class="caption" text="@call.incoming" />
+            <ui:VisualElement class="avatar-glow big">
+                <ui:VisualElement class="avatar big" />
+            </ui:VisualElement>
+            <ui:Label class="caller bold" text="@call.caller_unknown" />
+            <ui:VisualElement class="ring-buttons">
+                <ui:Button name="decline" class="round-button decline" text="@call.decline" />
+                <ui:Button name="accept" class="round-button accept" text="@call.accept" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="in-call" class="in-call hidden">
+            <ui:VisualElement class="call-header">
+                <ui:VisualElement class="avatar-glow">
+                    <ui:VisualElement class="avatar" />
+                </ui:VisualElement>
+                <ui:Label class="caller bold" text="@call.caller_unknown" />
+                <ui:Button name="hangup" class="hangup-button" text="@call.hangup" />
+            </ui:VisualElement>
+
+            <ui:ScrollView name="messages" class="messages" mode="Vertical" horizontal-scroller-visibility="Hidden" />
+
+            <ui:VisualElement name="dropped" class="dropped hidden">
+                <ui:Label class="body" text="@call.dropped" />
+                <ui:Button name="retry" class="primary-button" text="@call.retry" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="answer-area" class="answer-area hidden">
+                <ui:Label class="answer-hint" text="@call.choose_or_type" />
+                <ui:VisualElement name="options" class="options" />
+                <ui:VisualElement class="free-text-row">
+                    <ui:TextField name="free-text" class="free-text" max-length="300" />
+                    <ui:Button name="send" class="send-button" text="@call.send" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="call-footer" class="call-footer hidden">
+                <ui:Button name="see-result" class="primary-button" text="@call.see_result" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="intro" class="screen intro">
+        <ui:VisualElement class="pip">
+            <ui:VisualElement class="pip-body">
+                <ui:VisualElement class="pip-eye" />
+                <ui:VisualElement class="pip-eye" />
+            </ui:VisualElement>
+            <ui:VisualElement class="pip-antenna left" />
+            <ui:VisualElement class="pip-antenna right" />
+        </ui:VisualElement>
+        <ui:Label class="title bold" text="@intro.title" />
+        <ui:Label class="body" text="@intro.subtitle" />
+        <ui:Button name="start" class="primary-button" text="@intro.start" />
+        <ui:Label class="small body" text="@intro.privacy" />
+    </ui:VisualElement>
+</ui:UXML>

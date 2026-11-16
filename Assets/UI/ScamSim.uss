@@ -1,0 +1,446 @@
+/*
+ * ScamSim — one style sheet for every screen (PRD 2.7).
+ * Rules: rounded shapes, one outline width (4px) everywhere, outline 2 shades darker than its fill,
+ * no gradients. Scammer = red/orange, player = mint/blue, one UI accent (yellow). Text >= 18px.
+ */
+
+/* ---- Root and phone frame ---------------------------------------------------------------- */
+
+.scamsim-root {
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: center;
+    -unity-font: url("/Assets/Fonts/NotoSansThai-Regular.ttf");
+    font-size: 24px;
+    color: rgb(245, 247, 250);
+    background-color: rgb(16, 19, 33);
+}
+
+.phone {
+    flex-grow: 1;
+    max-width: 680px;
+    background-color: rgb(28, 33, 56);
+    border-left-width: 4px;
+    border-right-width: 4px;
+    border-color: rgb(10, 12, 22);
+}
+
+.screen {
+    flex-grow: 1;
+    padding: 32px 28px;
+}
+
+.bold {
+    -unity-font: url("/Assets/Fonts/NotoSansThai-Bold.ttf");
+}
+
+.title {
+    font-size: 44px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+    margin-bottom: 16px;
+}
+
+.body {
+    font-size: 24px;
+    white-space: normal;
+    -unity-text-align: middle-center;
+    margin-bottom: 12px;
+}
+
+.small {
+    font-size: 18px;
+    white-space: normal;
+    color: rgb(170, 178, 204);
+}
+
+.hidden {
+    display: none;
+}
+
+/* ---- Buttons ----------------------------------------------------------------------------- */
+
+Button {
+    -unity-font: url("/Assets/Fonts/NotoSansThai-Bold.ttf");
+    font-size: 26px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+    flex-shrink: 0;
+    border-width: 4px;
+    border-radius: 28px;
+    padding: 14px 24px;
+    margin: 8px 0;
+    transition-property: scale;
+    transition-duration: 0.08s;
+}
+
+Button:active {
+    scale: 0.96 0.96;
+}
+
+.primary-button {
+    background-color: rgb(255, 200, 61);
+    border-color: rgb(176, 124, 12);
+    color: rgb(48, 32, 4);
+    min-height: 72px;
+}
+
+.primary-button:hover {
+    background-color: rgb(255, 214, 104);
+}
+
+.option-button {
+    background-color: rgb(244, 240, 232);
+    border-color: rgb(84, 90, 124);
+    color: rgb(28, 30, 46);
+    -unity-font: url("/Assets/Fonts/NotoSansThai-Regular.ttf");
+    font-size: 24px;
+    -unity-text-align: middle-left;
+    min-height: 64px;
+    margin: 6px 0;
+}
+
+.option-button:hover {
+    background-color: rgb(255, 252, 244);
+    border-color: rgb(102, 214, 170);
+}
+
+/* ---- Intro ------------------------------------------------------------------------------- */
+
+.intro {
+    justify-content: center;
+    align-items: stretch;
+}
+
+.pip {
+    align-self: center;
+    width: 180px;
+    height: 200px;
+    margin-bottom: 24px;
+}
+
+.pip-antenna {
+    position: absolute;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    border-width: 4px;
+    border-color: rgb(32, 34, 52);
+    background-color: rgb(255, 200, 61);
+}
+
+.pip-antenna.left {
+    left: 34px;
+}
+
+.pip-antenna.right {
+    right: 34px;
+}
+
+.pip-body {
+    position: absolute;
+    top: 36px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 64px;
+    border-width: 4px;
+    border-color: rgb(32, 34, 52);
+    background-color: rgb(118, 226, 196);
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 60px;
+}
+
+.pip-eye {
+    width: 18px;
+    height: 26px;
+    border-radius: 9px;
+    margin: 0 22px;
+    background-color: rgb(32, 34, 52);
+}
+
+/* ---- Call -------------------------------------------------------------------------------- */
+
+.call {
+    padding: 0;
+    transition-property: background-color;
+    transition-duration: 0.8s;
+}
+
+/* Pressure 1..5: the room gets redder as the scammer pushes harder. */
+.call.pressure-1 { background-color: rgb(28, 40, 66); }
+.call.pressure-2 { background-color: rgb(40, 40, 70); }
+.call.pressure-3 { background-color: rgb(68, 40, 66); }
+.call.pressure-4 { background-color: rgb(98, 36, 50); }
+.call.pressure-5 { background-color: rgb(128, 28, 36); }
+
+.ringing {
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    padding: 32px 28px;
+}
+
+.caption {
+    font-size: 24px;
+    color: rgb(190, 198, 222);
+    margin-bottom: 24px;
+}
+
+.caller {
+    font-size: 36px;
+    margin-top: 20px;
+    -unity-text-align: middle-center;
+}
+
+/* The scammer has no face: a black silhouette with a glowing red edge. */
+.avatar-glow {
+    border-width: 4px;
+    border-color: rgba(255, 72, 72, 0.35);
+    padding: 6px;
+    border-radius: 100px;
+}
+
+.avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 36px;
+    border-width: 4px;
+    border-color: rgb(255, 72, 72);
+    background-color: rgb(10, 10, 14);
+}
+
+.avatar.big {
+    width: 180px;
+    height: 180px;
+    border-radius: 90px;
+}
+
+.avatar-glow.big {
+    border-radius: 110px;
+}
+
+.ring-buttons {
+    flex-direction: row;
+    justify-content: space-around;
+    align-self: stretch;
+    margin-top: 64px;
+}
+
+.round-button {
+    width: 200px;
+    min-height: 80px;
+    border-radius: 40px;
+    color: rgb(255, 255, 255);
+}
+
+.round-button.accept {
+    background-color: rgb(64, 186, 104);
+    border-color: rgb(28, 116, 60);
+}
+
+.round-button.decline,
+.hangup-button {
+    background-color: rgb(226, 68, 68);
+    border-color: rgb(146, 30, 30);
+    color: rgb(255, 255, 255);
+}
+
+.in-call {
+    flex-grow: 1;
+}
+
+.call-header {
+    flex-shrink: 0;
+    flex-direction: row;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom-width: 4px;
+    border-color: rgba(0, 0, 0, 0.35);
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.call-header .caller {
+    flex-grow: 1;
+    font-size: 26px;
+    margin: 0 16px;
+    -unity-text-align: middle-left;
+}
+
+.hangup-button {
+    margin: 0;
+    min-height: 56px;
+    padding: 8px 20px;
+}
+
+.messages {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.messages .unity-scroll-view__content-container {
+    padding: 20px 20px 8px 20px;
+}
+
+.bubble {
+    flex-shrink: 0;
+    max-width: 85%;
+    border-width: 4px;
+    border-radius: 26px;
+    padding: 12px 18px;
+    margin-bottom: 14px;
+    font-size: 24px;
+}
+
+.bubble-text {
+    white-space: normal;
+    margin: 0;
+    padding: 0;
+}
+
+/* Set the text colour on the label itself, so the theme's label colour cannot win over inheritance. */
+.bubble.scammer .bubble-text { color: rgb(44, 14, 6); }
+.bubble.player .bubble-text { color: rgb(8, 40, 32); }
+.bubble.system .bubble-text { color: rgb(220, 226, 240); font-size: 20px; }
+
+.bubble.scammer {
+    align-self: flex-start;
+    background-color: rgb(255, 128, 92);
+    border-color: rgb(178, 66, 40);
+    color: rgb(44, 14, 6);
+    border-bottom-left-radius: 6px;
+}
+
+.bubble.player {
+    align-self: flex-end;
+    background-color: rgb(118, 226, 196);
+    border-color: rgb(40, 140, 110);
+    color: rgb(8, 40, 32);
+    border-bottom-right-radius: 6px;
+}
+
+.bubble.typing {
+    padding: 4px 22px 12px 22px;
+}
+
+.bubble.typing .bubble-text {
+    -unity-font: url("/Assets/Fonts/NotoSansThai-Bold.ttf");
+    font-size: 30px;
+}
+
+.bubble.system {
+    align-self: center;
+    background-color: rgba(0, 0, 0, 0.35);
+    border-color: rgba(0, 0, 0, 0.5);
+    color: rgb(220, 226, 240);
+    font-size: 20px;
+}
+
+.answer-area,
+.dropped,
+.call-footer {
+    flex-shrink: 0;
+    padding: 12px 20px 20px 20px;
+    border-top-width: 4px;
+    border-color: rgba(0, 0, 0, 0.35);
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.answer-hint {
+    font-size: 20px;
+    color: rgb(200, 206, 226);
+    margin-bottom: 4px;
+}
+
+.free-text-row {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.free-text {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0 10px 0 0;
+}
+
+.free-text > .unity-text-field__input,
+.free-text .unity-base-text-field__input {
+    min-height: 60px;
+    font-size: 24px;
+    border-width: 4px;
+    border-radius: 20px;
+    border-color: rgb(84, 90, 124);
+    background-color: rgb(244, 240, 232);
+    color: rgb(28, 30, 46);
+    padding: 6px 14px;
+    -unity-font: url("/Assets/Fonts/NotoSansThai-Regular.ttf");
+}
+
+.send-button {
+    margin: 0;
+    min-height: 60px;
+    background-color: rgb(102, 196, 232);
+    border-color: rgb(30, 116, 156);
+    color: rgb(6, 30, 44);
+}
+
+.dropped {
+    align-items: center;
+}
+
+/* ---- Debrief ----------------------------------------------------------------------------- */
+
+.debrief {
+    justify-content: center;
+}
+
+.result-title {
+    font-size: 56px;
+    -unity-text-align: middle-center;
+    border-width: 4px;
+    border-radius: 32px;
+    padding: 12px 20px;
+    margin-bottom: 16px;
+}
+
+.result-title.scammed {
+    background-color: rgb(255, 128, 92);
+    border-color: rgb(178, 66, 40);
+    color: rgb(44, 14, 6);
+}
+
+.result-title.escaped,
+.result-title.hung_up {
+    background-color: rgb(118, 226, 196);
+    border-color: rgb(40, 140, 110);
+    color: rgb(8, 40, 32);
+}
+
+.section-title {
+    font-size: 28px;
+    margin-top: 16px;
+    margin-bottom: 8px;
+}
+
+.lesson {
+    font-size: 24px;
+    white-space: normal;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    border-width: 4px;
+    border-radius: 20px;
+    border-color: rgb(52, 58, 92);
+    background-color: rgb(38, 44, 74);
+}
+
+.debrief .primary-button {
+    margin-top: 20px;
+}
+
+.log-path {
+    margin-top: 12px;
+    -unity-text-align: middle-center;
+}

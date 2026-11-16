@@ -12,10 +12,17 @@ namespace ScamSim.Logging
         [JsonProperty("turn_index")] public int TurnIndex;
         [JsonProperty("timestamp")] public string Timestamp;
         [JsonProperty("source")] public string Source;
+        /// <summary>False when the player hung up before this line appeared; its red flags are not counted.</summary>
+        [JsonProperty("line_shown")] public bool LineShown = true;
         [JsonProperty("scammer_line")] public string ScammerLine;
         [JsonProperty("pressure_level")] public int PressureLevel;
         [JsonProperty("red_flags")] public List<string> RedFlags = new List<string>();
         [JsonProperty("player_options")] public List<string> PlayerOptions = new List<string>();
+        /// <summary>
+        /// Option index in each on-screen slot, top to bottom: [2,0,1] means the resist option was shown first.
+        /// Null when the line had no options (the call ended on it).
+        /// </summary>
+        [JsonProperty("option_display_order")] public List<int> OptionDisplayOrder;
         /// <summary>0/1/2 for an option, "free" for typed text, "hang_up", or null when the call ended on this line.</summary>
         [JsonProperty("player_choice")] public object PlayerChoice;
         [JsonProperty("player_text")] public string PlayerText;
@@ -138,11 +145,13 @@ namespace ScamSim.Logging
                     TurnIndex = i,
                     Timestamp = exchange.TimestampUtc,
                     Source = exchange.Source,
+                    LineShown = exchange.LineShown,
                     ScammerLine = scammer.ScammerLine ?? "",
                     PressureLevel = scammer.PressureLevel,
                     RedFlags = scammer.RedFlags != null ? new List<string>(scammer.RedFlags) : new List<string>(),
                     PlayerOptions = scammer.PlayerOptions != null ? new List<string>(scammer.PlayerOptions) : new List<string>(),
-                    GoalProgress = scammer.GoalProgress != null ? scammer.GoalProgress.Clone() : new GoalProgress()
+                    GoalProgress = scammer.GoalProgress != null ? scammer.GoalProgress.Clone() : new GoalProgress(),
+                    OptionDisplayOrder = exchange.OptionOrder != null ? new List<int>(exchange.OptionOrder) : null
                 };
 
                 PlayerReply reply = exchange.Reply;
@@ -161,7 +170,8 @@ namespace ScamSim.Logging
                     if (turn.RedFlagsNoticed == true) log.RedFlagsPlayerReactedTo += turn.RedFlags.Count;
                 }
 
-                log.RedFlagsTotal += turn.RedFlags.Count;
+                // A line the player never saw released no red flags to them.
+                if (turn.LineShown) log.RedFlagsTotal += turn.RedFlags.Count;
                 log.Turns.Add(turn);
             }
 

@@ -110,10 +110,19 @@ namespace ScamSim.Core
             Current.Scammer.GoalProgress = State.Goals.Clone();
         }
 
-        public void HangUp(long responseTimeMs)
+        /// <param name="responseTimeMs">Time from the line appearing to the hang up.</param>
+        /// <param name="lineSeen">
+        /// False when the latest line was not on screen yet. The hang up is then not a reply to it:
+        /// the turn keeps no reply and is marked as never shown.
+        /// </param>
+        public void HangUp(long responseTimeMs, bool lineSeen = true)
         {
             if (IsOver) return;
-            if (AwaitingReply) Current.Reply = PlayerReply.HangUp(responseTimeMs);
+            if (AwaitingReply)
+            {
+                if (lineSeen) Current.Reply = PlayerReply.HangUp(responseTimeMs);
+                else Current.LineShown = false;
+            }
             End(EndedBy.PlayerHangUp, null);
         }
 

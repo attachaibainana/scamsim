@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="debrief" class="screen debrief">
+        <ui:Label name="result" class="result-title bold" />
+        <ui:Label name="result-detail" class="body" />
+        <ui:Label class="section-title bold" text="@debrief.lessons" />
+        <ui:VisualElement name="lessons" class="lessons" />
+        <ui:Button name="play-again" class="primary-button" text="@debrief.play_again" />
+        <ui:Label name="log-path" class="small log-path" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -226,8 +226,11 @@ namespace ScamSim.Tests
 
         [TestCase("=1+1", "'=1+1")]
         [TestCase("+66", "'+66")]
-        [TestCase("-5", "'-5")]
+        [TestCase("-1+1", "'-1+1")]
+        [TestCase("-", "'-")]
         [TestCase("@SUM(A1)", "'@SUM(A1)")]
+        [TestCase("-5", "-5")]
+        [TestCase("-12.5", "-12.5")]
         [TestCase("=HYPERLINK(\"http://x\",\"y\")", "\"'=HYPERLINK(\"\"http://x\"\",\"\"y\"\")\"")]
         [TestCase("a=b", "a=b")]
         public void TextThatLooksLikeAFormulaIsNeutralised(string field, string expected)
@@ -266,6 +269,10 @@ namespace ScamSim.Tests
 
             Assert.AreEqual("test", rows[1][Array.IndexOf(CsvExporter.Columns, "app_version")]);
             Assert.AreEqual("4242", rows[1][Array.IndexOf(CsvExporter.Columns, "option_shuffle_seed")]);
+
+            meta.OptionShuffleSeed = -4242;
+            rows = TestSessions.ParseCsv(CsvExporter.ToCsv(SessionLogger.Build(meta, manager, null, null)));
+            Assert.AreEqual("-4242", rows[1][Array.IndexOf(CsvExporter.Columns, "option_shuffle_seed")], "numbers stay numbers");
         }
 
         [Test]
@@ -660,6 +667,38 @@ namespace ScamSim.Tests
             Loc.Load(File.ReadAllText(Path.Combine(Application.dataPath, "Localization/th.json")));
             Assert.IsTrue(Loc.Has("intro.title"));
             Assert.AreEqual("[no.such.key]", Loc.T("no.such.key"));
+        }
+
+        /// <summary>Every key written in UXML (text="@key") or passed to Loc.T as a literal exists in th.json.</summary>
+        [Test]
+        public void EveryKeyTheGameUsesExists()
+        {
+            Loc.Load(File.ReadAllText(Path.Combine(Application.dataPath, "Localization/th.json")));
+            var used = new HashSet<string>();
+
+            foreach (string file in Directory.GetFiles(Path.Combine(Application.dataPath, "UI"), "*.uxml"))
+            {
+                foreach (System.Text.RegularExpressions.Match match in
+                         System.Text.RegularExpressions.Regex.Matches(File.ReadAllText(file), "text=\"@([a-z0-9_.]+)\""))
+                    used.Add(match.Groups[1].Value);
+            }
+
+            foreach (string file in Directory.GetFiles(Path.Combine(Application.dataPath, "Scripts"), "*.cs", SearchOption.AllDirectories))
+            {
+                foreach (System.Text.RegularExpressions.Match match in
+                         System.Text.RegularExpressions.Regex.Matches(File.ReadAllText(file), "Loc\\.T\\(\"([a-z0-9_.]+)\"\\s*[,)]"))
+                    used.Add(match.Groups[1].Value);
+            }
+
+            // Keys built from an end reason at runtime.
+            foreach (string reason in new[] { EndReasons.Scammed, EndReasons.Escaped, EndReasons.HungUp })
+            {
+                used.Add("debrief.result." + reason);
+                used.Add("debrief.detail." + reason);
+            }
+
+            Assert.Greater(used.Count, 20);
+            foreach (string key in used) Assert.IsTrue(Loc.Has(key), "th.json is missing " + key);
         }
     }
 

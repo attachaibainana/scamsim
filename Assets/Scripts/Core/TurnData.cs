@@ -185,6 +185,10 @@ namespace ScamSim.Core
     {
         public ScammerTurn Scammer;
         public PlayerReply Reply;
+        /// <summary>order[slot] = option index shown in that slot on screen. Null when no options were shown.</summary>
+        public int[] OptionOrder;
+        /// <summary>False when the player hung up while this line was still "being typed", so they never read it.</summary>
+        public bool LineShown = true;
         public string TimestampUtc;
         public string Source = TurnSources.Scripted;
     }
