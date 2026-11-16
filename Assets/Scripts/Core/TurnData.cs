@@ -189,6 +189,10 @@ namespace ScamSim.Core
         public int[] OptionOrder;
         /// <summary>False when the player hung up while this line was still "being typed", so they never read it.</summary>
         public bool LineShown = true;
+        /// <summary>Why the provider's answer was not used (the line is then a fallback), or null.</summary>
+        public string ProviderError;
+        /// <summary>How many requests this line took (1 when the first answer was fine).</summary>
+        public int ProviderAttempts = 1;
         public string TimestampUtc;
         public string Source = TurnSources.Scripted;
     }

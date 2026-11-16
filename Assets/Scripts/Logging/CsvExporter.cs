@@ -15,10 +15,10 @@ namespace ScamSim.Logging
         public static readonly string[] Columns =
         {
             "session_id", "scenario_id", "app_version", "provider", "model_id", "prompt_version", "temperature",
-            "option_shuffle_seed",
+            "effort", "option_shuffle_seed",
             "start_time", "end_time", "end_reason", "ended_by", "total_turns",
             "red_flags_total", "red_flags_player_reacted_to",
-            "turn_index", "timestamp", "source", "line_shown", "scammer_line", "pressure_level",
+            "turn_index", "timestamp", "source", "provider_error", "provider_attempts", "line_shown", "scammer_line", "pressure_level",
             "red_flags", "red_flag_count", "red_flags_noticed",
             "player_options", "option_display_order", "player_choice", "player_stance", "player_stance_source", "player_text",
             "pii_redacted", "response_time_ms",
@@ -46,6 +46,8 @@ namespace ScamSim.Logging
                 row.Add(turn.TurnIndex.ToString(CultureInfo.InvariantCulture));
                 row.Add(turn.Timestamp);
                 row.Add(turn.Source);
+                row.Add(turn.ProviderError);
+                row.Add(turn.ProviderAttempts.ToString(CultureInfo.InvariantCulture));
                 row.Add(Bool(turn.LineShown));
                 row.Add(turn.ScammerLine);
                 row.Add(turn.PressureLevel.ToString(CultureInfo.InvariantCulture));
@@ -116,6 +118,7 @@ namespace ScamSim.Logging
                 log.ModelId,
                 log.PromptVersion,
                 log.Temperature.HasValue ? log.Temperature.Value.ToString(CultureInfo.InvariantCulture) : "",
+                log.Effort,
                 log.OptionShuffleSeed.ToString(CultureInfo.InvariantCulture),
                 log.StartTime,
                 log.EndTime,

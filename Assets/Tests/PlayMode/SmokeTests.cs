@@ -33,6 +33,8 @@ namespace ScamSim.Tests
             yield return SceneManager.LoadSceneAsync("Main", LoadSceneMode.Single);
             _session = UnityEngine.Object.FindAnyObjectByType<GameSession>();
             Assert.IsNotNull(_session, "Main scene has no GameSession");
+            // Never call the real API from tests, even when a developer has a key in config.json.
+            _session.UseProvider(null);
             _session.MinTypingSeconds = 0f;
             _texture = UiCapture.Redirect(_session.Document);
             yield return null;

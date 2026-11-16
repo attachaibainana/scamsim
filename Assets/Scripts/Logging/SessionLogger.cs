@@ -12,6 +12,9 @@ namespace ScamSim.Logging
         [JsonProperty("turn_index")] public int TurnIndex;
         [JsonProperty("timestamp")] public string Timestamp;
         [JsonProperty("source")] public string Source;
+        /// <summary>Why the model's answer was not used for this line (e.g. "refusal:cyber", "invalid_output:player_options"), or null.</summary>
+        [JsonProperty("provider_error")] public string ProviderError;
+        [JsonProperty("provider_attempts")] public int ProviderAttempts = 1;
         /// <summary>False when the player hung up before this line appeared; its red flags are not counted.</summary>
         [JsonProperty("line_shown")] public bool LineShown = true;
         [JsonProperty("scammer_line")] public string ScammerLine;
@@ -44,7 +47,9 @@ namespace ScamSim.Logging
         [JsonProperty("provider")] public string Provider;
         [JsonProperty("model_id")] public string ModelId;
         [JsonProperty("prompt_version")] public string PromptVersion;
+        /// <summary>Always null: API version 2026-10-21 no longer accepts temperature. See effort.</summary>
         [JsonProperty("temperature")] public double? Temperature;
+        [JsonProperty("effort")] public string Effort;
         [JsonProperty("option_shuffle_seed")] public int OptionShuffleSeed;
         [JsonProperty("start_time")] public string StartTime;
         [JsonProperty("end_time")] public string EndTime;
@@ -66,6 +71,7 @@ namespace ScamSim.Logging
         public string ModelId;
         public string PromptVersion;
         public double? Temperature;
+        public string Effort;
         public int OptionShuffleSeed;
         public DateTime StartUtc;
     }
@@ -127,6 +133,7 @@ namespace ScamSim.Logging
                 ModelId = meta.ModelId,
                 PromptVersion = meta.PromptVersion,
                 Temperature = meta.Temperature,
+                Effort = meta.Effort,
                 OptionShuffleSeed = meta.OptionShuffleSeed,
                 StartTime = meta.StartUtc.ToString("o"),
                 EndTime = endUtc.HasValue ? endUtc.Value.ToString("o") : null,
@@ -145,6 +152,8 @@ namespace ScamSim.Logging
                     TurnIndex = i,
                     Timestamp = exchange.TimestampUtc,
                     Source = exchange.Source,
+                    ProviderError = exchange.ProviderError,
+                    ProviderAttempts = exchange.ProviderAttempts,
                     LineShown = exchange.LineShown,
                     ScammerLine = scammer.ScammerLine ?? "",
                     PressureLevel = scammer.PressureLevel,

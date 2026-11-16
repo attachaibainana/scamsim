@@ -36,7 +36,10 @@ namespace ScamSim.LLM
         string ProviderId { get; }
         string ModelId { get; }
         string PromptVersion { get; }
+        /// <summary>Always null on current models (the API no longer accepts it); kept for the log schema.</summary>
         double? Temperature { get; }
+        /// <summary>Reasoning effort sent to the model (low..max), or null for providers without one.</summary>
+        string Effort { get; }
         string ScenarioId { get; }
 
         IEnumerator NextTurn(ProviderRequest request, Action<ProviderResult> onDone);

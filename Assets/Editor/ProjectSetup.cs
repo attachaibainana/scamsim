@@ -28,6 +28,8 @@ namespace ScamSim.EditorTools
         public const string DebriefPath = UiFolder + "/Debrief.uxml";
         public const string LocalizationPath = "Assets/Localization/th.json";
         public const string ScenarioPath = "Assets/Scenarios/police_scripted.json";
+        public const string ScammerPromptPath = "Assets/Prompts/scammer_police.txt";
+        public const string LessonsPromptPath = "Assets/Prompts/lessons.txt";
         public const string ScenePath = "Assets/Scenes/Main.unity";
         public const string DefaultWindowsOutput = "Builds/Windows/ScamSim.exe";
 
@@ -99,6 +101,8 @@ namespace ScamSim.EditorTools
             Set(serialized, "styles", Load<StyleSheet>(StylesPath));
             Set(serialized, "localization", Load<TextAsset>(LocalizationPath));
             Set(serialized, "scenario", Load<TextAsset>(ScenarioPath));
+            Set(serialized, "scammerPrompt", Load<TextAsset>(ScammerPromptPath));
+            Set(serialized, "lessonsPrompt", Load<TextAsset>(LessonsPromptPath));
             Set(serialized, "introLayout", Load<VisualTreeAsset>(IntroPath));
             Set(serialized, "callLayout", Load<VisualTreeAsset>(CallPath));
             Set(serialized, "debriefLayout", Load<VisualTreeAsset>(DebriefPath));

@@ -28,6 +28,7 @@ namespace ScamSim.LLM
         public string ModelId { get { return "scripted"; } }
         public string PromptVersion { get { return Scenario.Version; } }
         public double? Temperature { get { return null; } }
+        public string Effort { get { return null; } }
         public string ScenarioId { get { return Scenario.ScenarioId; } }
 
         public IEnumerator NextTurn(ProviderRequest request, Action<ProviderResult> onDone)

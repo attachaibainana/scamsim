@@ -9,13 +9,22 @@ namespace ScamSim.UI
         public VisualElement Root { get; private set; }
         public event Action StartClicked;
 
+        readonly Label _mode;
+
         public IntroScreen(VisualElement root)
         {
             Root = root;
+            _mode = UiKit.Require<Label>(root, "mode");
             UiKit.Require<Button>(root, "start").clicked += () =>
             {
                 if (StartClicked != null) StartClicked();
             };
+        }
+
+        /// <summary>Says whether calls use Claude or the offline script.</summary>
+        public void SetMode(string text)
+        {
+            _mode.text = text;
         }
     }
 }

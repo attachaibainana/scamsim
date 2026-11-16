@@ -12,5 +12,6 @@
         <ui:Label class="body" text="@intro.subtitle" />
         <ui:Button name="start" class="primary-button" text="@intro.start" />
         <ui:Label class="small body" text="@intro.privacy" />
+        <ui:Label name="mode" class="small body mode" />
     </ui:VisualElement>
 </ui:UXML>

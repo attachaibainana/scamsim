@@ -193,6 +193,7 @@ namespace ScamSim.Core
 
             ScammerTurn turn;
             string source;
+            string providerError = null;
             if (error == null && result != null && result.Success && IsPlayable(result.Turn))
             {
                 turn = result.Turn;
@@ -207,9 +208,13 @@ namespace ScamSim.Core
             {
                 turn = _fallback.FallbackTurn(request);
                 source = TurnSources.Fallback;
+                if (error != null) providerError = "exception:" + error.GetType().Name;
+                else if (result == null) providerError = "no_result";
+                else if (!result.Success) providerError = string.IsNullOrEmpty(result.Error) ? "failed" : result.Error;
+                else providerError = "unplayable_turn";
             }
 
-            ApplyScammerTurn(turn, source);
+            ApplyScammerTurn(turn, source, providerError, result != null && result.Attempts > 0 ? result.Attempts : 1);
         }
 
         IEnumerator Conclude()
@@ -231,47 +236,79 @@ namespace ScamSim.Core
 
         /// <summary>
         /// Runs a provider coroutine, stopping early once <paramref name="abandon"/> returns true (the
-        /// player hung up, or the provider took too long). An exception inside the provider is
-        /// reported instead of killing the game's coroutine.
+        /// player hung up, or the provider took too long). Nested coroutines are stepped here rather
+        /// than handed to Unity, which would run a nested one to the end before giving control back:
+        /// the abandon check then runs every frame, even in the middle of an HTTP request and its
+        /// retries. An exception at any depth is reported instead of killing the game's coroutine,
+        /// and stopping early disposes every level, which aborts a web request still in flight.
         /// </summary>
-        static IEnumerator Drive(IEnumerator inner, Action<Exception> onError, Func<bool> abandon)
+        static IEnumerator Drive(IEnumerator root, Action<Exception> onError, Func<bool> abandon)
         {
-            if (inner == null) yield break;
+            if (root == null) yield break;
+            var stack = new Stack<IEnumerator>();
+            stack.Push(root);
             try
             {
-                while (true)
+                while (stack.Count > 0)
                 {
                     if (abandon != null && abandon()) yield break;
 
+                    IEnumerator top = stack.Peek();
                     bool moved;
                     try
                     {
-                        moved = inner.MoveNext();
+                        moved = top.MoveNext();
                     }
                     catch (Exception e)
                     {
                         if (onError != null) onError(e);
                         yield break;
                     }
-                    if (!moved) yield break;
-                    yield return inner.Current;
+
+                    if (!moved)
+                    {
+                        DisposeQuietly(stack.Pop());
+                        continue;
+                    }
+
+                    var nested = top.Current as IEnumerator;
+                    if (nested != null)
+                    {
+                        stack.Push(nested);
+                        continue;
+                    }
+                    yield return top.Current;
                 }
             }
             finally
             {
-                // Lets the provider dispose a web request it was still waiting on.
-                var disposable = inner as IDisposable;
-                if (disposable != null) disposable.Dispose();
+                while (stack.Count > 0) DisposeQuietly(stack.Pop());
+            }
+        }
+
+        static void DisposeQuietly(IEnumerator enumerator)
+        {
+            var disposable = enumerator as IDisposable;
+            if (disposable == null) return;
+            try
+            {
+                disposable.Dispose();
+            }
+            catch (Exception)
+            {
+                // Cleanup must never take the call down with it.
             }
         }
 
         // ---- Internals -------------------------------------------------------------------------
 
-        void ApplyScammerTurn(ScammerTurn turn, string source)
+        void ApplyScammerTurn(ScammerTurn turn, string source, string providerError, int attempts)
         {
             Manager.ApplyScammerTurn(turn, source);
 
             Exchange exchange = Manager.Current;
+            exchange.ProviderError = providerError;
+            exchange.ProviderAttempts = attempts;
             if (!Manager.IsOver)
                 exchange.OptionOrder = OptionOrder.For(Meta.OptionShuffleSeed, Manager.TurnCount - 1, exchange.Scammer.PlayerOptions.Count);
 

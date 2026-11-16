@@ -28,6 +28,8 @@ namespace ScamSim.Core
         [SerializeField] StyleSheet styles;
         [SerializeField] TextAsset localization;
         [SerializeField] TextAsset scenario;
+        [SerializeField] TextAsset scammerPrompt;
+        [SerializeField] TextAsset lessonsPrompt;
         [SerializeField] VisualTreeAsset introLayout;
         [SerializeField] VisualTreeAsset callLayout;
         [SerializeField] VisualTreeAsset debriefLayout;
@@ -36,8 +38,20 @@ namespace ScamSim.Core
         [SerializeField] float minTypingSeconds = 0.9f;
 
         ScriptedProvider _scripted;
+        ILLMProvider _provider;
         VisualElement _phone;
         IDisposable _screen;
+
+        /// <summary>The scammer for new calls: Claude when config.json has an API key, otherwise the script.</summary>
+        public ILLMProvider Provider
+        {
+            get { return _provider; }
+        }
+
+        public bool IsOnline
+        {
+            get { return _provider is AnthropicProvider; }
+        }
 
         public GameScreen Screen { get; private set; }
         public CallSession Call { get; private set; }
@@ -61,7 +75,38 @@ namespace ScamSim.Core
             if (document == null) document = GetComponent<UIDocument>();
             Loc.Load(localization.text);
             _scripted = new ScriptedProvider(scenario.text);
+            _provider = CreateProvider();
             LogDirectory = LogLocation.Resolve();
+        }
+
+        /// <summary>
+        /// Uses Claude only when config.json holds an API key; anything wrong with the setup falls back
+        /// to the offline script, so the game always starts (PRD 3: offline fallback).
+        /// </summary>
+        ILLMProvider CreateProvider()
+        {
+            string error;
+            AppConfig config = AppConfig.Load(out error);
+            if (error != null) Debug.LogWarning("[ScamSim] " + error + " Running offline.");
+            foreach (string warning in config.Warnings) Debug.LogWarning("[ScamSim] config.json: " + warning);
+            if (!config.HasApiKey) return _scripted;
+
+            try
+            {
+                return new AnthropicProvider(AnthropicSettings.From(config), PromptFile.Parse(scammerPrompt.text),
+                    PromptFile.Parse(lessonsPrompt.text), new UnityHttpTransport(), _scripted.ScenarioId);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("[ScamSim] Could not set up the Claude provider (" + e.Message + "). Running offline.");
+                return _scripted;
+            }
+        }
+
+        /// <summary>For tests and tools: play the next calls against this provider.</summary>
+        public void UseProvider(ILLMProvider provider)
+        {
+            _provider = provider ?? _scripted;
         }
 
         void Start()
@@ -79,6 +124,7 @@ namespace ScamSim.Core
         {
             var intro = new IntroScreen(Mount(introLayout));
             intro.StartClicked += StartCall;
+            intro.SetMode(IsOnline ? Loc.T("intro.mode_ai", _provider.ModelId) : Loc.T("intro.mode_offline"));
             Screen = GameScreen.Intro;
         }
 
@@ -87,21 +133,26 @@ namespace ScamSim.Core
         {
             if (Call != null) Call.StateChanged -= OnCallStateChanged;
 
+            // The API rejected the key or model during an earlier call: play the next calls offline.
+            var online = _provider as AnthropicProvider;
+            if (online != null && online.IsDisabled) _provider = _scripted;
+
             var meta = new SessionMeta
             {
                 SessionId = Guid.NewGuid().ToString(),
-                ScenarioId = _scripted.ScenarioId,
+                ScenarioId = _provider.ScenarioId,
                 AppVersion = Application.version,
-                Provider = _scripted.ProviderId,
-                ModelId = _scripted.ModelId,
-                PromptVersion = _scripted.PromptVersion,
-                Temperature = _scripted.Temperature,
+                Provider = _provider.ProviderId,
+                ModelId = _provider.ModelId,
+                PromptVersion = _provider.PromptVersion,
+                Temperature = _provider.Temperature,
+                Effort = _provider.Effort,
                 // Non-negative, so the seed reads as a plain number in every export.
                 OptionShuffleSeed = UnityEngine.Random.Range(0, int.MaxValue),
                 StartUtc = DateTime.UtcNow
             };
 
-            Call = new CallSession(_scripted, _scripted, meta, LogDirectory);
+            Call = new CallSession(_provider, _scripted, meta, LogDirectory);
             Call.SaveFailed += error => Debug.LogWarning("[ScamSim] Could not save the session log: " + error);
             Call.StateChanged += OnCallStateChanged;
 

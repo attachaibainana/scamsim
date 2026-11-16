@@ -24,7 +24,9 @@ namespace ScamSim.Core
     public class DebriefItem
     {
         public int TurnIndex;
+        /// <summary>The line cut down for the timeline.</summary>
         public string ScammerLine;
+        public string FullScammerLine;
         public readonly List<DebriefFlag> Flags = new List<DebriefFlag>();
         /// <summary>What the player said, or null when they did not reply.</summary>
         public string PlayerText;
@@ -75,6 +77,7 @@ namespace ScamSim.Core
                 {
                     TurnIndex = turn.TurnIndex,
                     ScammerLine = Shorten(turn.ScammerLine, ShortLineLength),
+                    FullScammerLine = turn.ScammerLine ?? "",
                     PlayerText = replied ? turn.PlayerText : null,
                     PlayerHungUp = replied && "hang_up".Equals(turn.PlayerChoice as string)
                 };

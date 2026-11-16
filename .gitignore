@@ -34,6 +34,9 @@ test-results.xml
 .vscode/
 
 # ScamSim: secrets and research logs never go to git
+# config.json holds the API key. It lives at the project root (next to the .exe in a build) and is
+# never inside Assets, because everything under StreamingAssets is copied into every build.
+/config.json
 /Assets/StreamingAssets/config.json
 /Assets/StreamingAssets/config.json.meta
 /Logs/

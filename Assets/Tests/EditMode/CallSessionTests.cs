@@ -389,6 +389,58 @@ namespace ScamSim.Tests
             Assert.IsTrue(fake.LessonsDisposed);
         }
 
+        /// <summary>
+        /// A provider that waits inside a NESTED coroutine, the way an HTTP request inside a retry loop
+        /// does. Unity would run a nested coroutine to its end before resuming the parent, so the call
+        /// must step it itself to be able to stop it.
+        /// </summary>
+        [Test]
+        public void HangingUpStopsARequestWaitingInANestedCoroutine()
+        {
+            var provider = new NestedProvider { Hold = true };
+            CallSession call = NewCall(provider);
+            var pump = new CoroutinePump(call.Run());
+            call.Accept();
+            for (int i = 0; i < 3; i++) pump.RunUntilIdle();
+            Assert.AreEqual(CallState.WaitingForScammer, call.State);
+
+            call.HangUp();
+            pump.RunUntilIdle();
+            Assert.IsTrue(pump.Finished, "the call finished although the request never answered");
+            Assert.IsTrue(provider.InnerDisposed, "the waiting request was disposed (aborted)");
+            Assert.IsTrue(call.IsConcluded);
+        }
+
+        [Test]
+        public void LessonsWaitingInANestedCoroutineStillTimeOut()
+        {
+            var provider = new NestedProvider { HoldLessons = true };
+            CallSession call = NewCall(provider);
+            var pump = new CoroutinePump(call.Run());
+            pump.RunUntilIdle();
+            call.Decline();
+            pump.RunUntilIdle();
+            Assert.IsFalse(call.IsConcluded);
+
+            _now += CallSession.LessonTimeoutMs + 1;
+            pump.RunUntilIdle();
+            Assert.IsTrue(call.IsConcluded);
+            Assert.IsTrue(provider.InnerDisposed);
+        }
+
+        [Test]
+        public void AnExceptionDeepInsideTheProviderFallsBack()
+        {
+            var provider = new NestedProvider { Throw = true };
+            CallSession call = NewCall(provider);
+            var pump = new CoroutinePump(call.Run());
+            call.Accept();
+            pump.RunUntilIdle();
+            Assert.AreEqual(CallState.AwaitingPlayer, call.State);
+            Assert.AreEqual(TurnSources.Fallback, call.Logger.Latest.Turns[0].Source);
+            Assert.AreEqual("exception:InvalidOperationException", call.Logger.Latest.Turns[0].ProviderError);
+        }
+
         static ScammerTurn Line(string text)
         {
             return new ScammerTurn
@@ -422,7 +474,8 @@ namespace ScamSim.Tests
         public string ProviderId { get { return "fake"; } }
         public string ModelId { get { return "fake-model"; } }
         public string PromptVersion { get { return "fake-1"; } }
-        public double? Temperature { get { return 0.7; } }
+        public double? Temperature { get { return null; } }
+        public string Effort { get { return "low"; } }
         public string ScenarioId { get { return "police_cyber_v1"; } }
 
         public IEnumerator NextTurn(ProviderRequest request, Action<ProviderResult> onDone)
@@ -448,6 +501,50 @@ namespace ScamSim.Tests
             finally
             {
                 LessonsDisposed = true;
+            }
+        }
+    }
+
+    /// <summary>Waits and throws one level down, inside a nested coroutine.</summary>
+    class NestedProvider : ILLMProvider
+    {
+        public bool Hold;
+        public bool HoldLessons;
+        public bool Throw;
+        public bool InnerDisposed;
+
+        public string ProviderId { get { return "nested"; } }
+        public string ModelId { get { return "nested"; } }
+        public string PromptVersion { get { return "nested-1"; } }
+        public double? Temperature { get { return null; } }
+        public string Effort { get { return null; } }
+        public string ScenarioId { get { return "police_cyber_v1"; } }
+
+        public IEnumerator NextTurn(ProviderRequest request, Action<ProviderResult> onDone)
+        {
+            yield return Wait(() => Hold);
+            onDone(new ProviderResult { Success = true, Turn = new ScammerTurn
+            {
+                ScammerLine = "มาช้า", PressureLevel = 2, PlayerOptions = new List<string> { "ก", "ข", "ค" }
+            }});
+        }
+
+        public IEnumerator GenerateLessons(SessionLog log, Action<List<string>> onDone)
+        {
+            yield return Wait(() => HoldLessons);
+            onDone(null);
+        }
+
+        IEnumerator Wait(Func<bool> hold)
+        {
+            try
+            {
+                if (Throw) throw new InvalidOperationException("broken transport");
+                while (hold()) yield return null;
+            }
+            finally
+            {
+                InnerDisposed = true;
             }
         }
     }
