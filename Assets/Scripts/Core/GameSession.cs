@@ -1,6 +1,7 @@
 using System;
 using ScamSim.LLM;
 using ScamSim.Logging;
+using ScamSim.News;
 using ScamSim.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -21,7 +22,8 @@ namespace ScamSim.Core
             None,
             Intro,
             Call,
-            Debrief
+            Debrief,
+            News
         }
 
         [SerializeField] UIDocument document;
@@ -33,6 +35,7 @@ namespace ScamSim.Core
         [SerializeField] VisualTreeAsset introLayout;
         [SerializeField] VisualTreeAsset callLayout;
         [SerializeField] VisualTreeAsset debriefLayout;
+        [SerializeField] VisualTreeAsset newsLayout;
 
         [Tooltip("Shortest time the scammer appears to be typing before a line shows.")]
         [SerializeField] float minTypingSeconds = 0.9f;
@@ -57,6 +60,7 @@ namespace ScamSim.Core
         public CallSession Call { get; private set; }
         public CallScreen CallView { get; private set; }
         public DebriefScreen DebriefView { get; private set; }
+        public NewsScreen NewsView { get; private set; }
         public string LogDirectory { get; private set; }
 
         public float MinTypingSeconds
@@ -124,6 +128,7 @@ namespace ScamSim.Core
         {
             var intro = new IntroScreen(Mount(introLayout));
             intro.StartClicked += StartCall;
+            intro.NewsClicked += ShowNews;
             intro.SetMode(IsOnline ? Loc.T("intro.mode_ai", _provider.ModelId) : Loc.T("intro.mode_offline"));
             Screen = GameScreen.Intro;
         }
@@ -175,6 +180,22 @@ namespace ScamSim.Core
             Screen = GameScreen.Debrief;
         }
 
+        /// <summary>The news page; the feed is read in the background and shown when it arrives.</summary>
+        public void ShowNews()
+        {
+            var news = new NewsScreen(Mount(newsLayout));
+            news.BackClicked += ShowIntro;
+            _screen = news;
+            NewsView = news;
+            Screen = GameScreen.News;
+
+            StartCoroutine(NewsLoader.Load((feed, problems) =>
+            {
+                foreach (string problem in problems) Debug.LogWarning("[ScamSim] news.json: " + problem);
+                if (NewsView == news) news.ShowFeed(feed);
+            }));
+        }
+
         void OnCallStateChanged(CallState state)
         {
             // Declining never opens the chat, so go straight to the result. Switch on the next tick:
@@ -192,6 +213,7 @@ namespace ScamSim.Core
             CloseScreen();
             CallView = null;
             DebriefView = null;
+            NewsView = null;
             EnsurePhone();
             _phone.Clear();
 

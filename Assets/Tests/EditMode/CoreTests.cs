@@ -697,6 +697,8 @@ namespace ScamSim.Tests
                 used.Add("debrief.detail." + reason);
             }
             foreach (string goal in DebriefSummary.GoalKeys) used.Add("debrief.lost." + goal);
+            foreach (string type in ScamSim.News.NewsTypes.All) used.Add("news.type." + type);
+            for (int month = 1; month <= 12; month++) used.Add("date.month." + month);
 
             Assert.Greater(used.Count, 20);
             foreach (string key in used) Assert.IsTrue(Loc.Has(key), "th.json is missing " + key);

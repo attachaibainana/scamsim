@@ -19,7 +19,13 @@ namespace ScamSim.UI
             {
                 if (StartClicked != null) StartClicked();
             };
+            UiKit.Require<Button>(root, "news").clicked += () =>
+            {
+                if (NewsClicked != null) NewsClicked();
+            };
         }
+
+        public event Action NewsClicked;
 
         /// <summary>Says whether calls use Claude or the offline script.</summary>
         public void SetMode(string text)

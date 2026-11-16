@@ -159,6 +159,38 @@ namespace ScamSim.Tests
         }
 
         [UnityTest]
+        public IEnumerator NewsPageListsAndFiltersRealCases()
+        {
+            Click("news");
+            yield return WaitUntil(() => _session.NewsView != null && _session.NewsView.CardCount > 0, "news cards");
+            yield return Frames(2);
+            Assert.AreEqual(GameSession.GameScreen.News, _session.Screen);
+            var problems = new System.Collections.Generic.List<string>();
+            ScamSim.News.NewsFeed feed = ScamSim.News.NewsFeedParser.Parse(
+                System.IO.File.ReadAllText(ScamSim.News.NewsLoader.Location), problems);
+            int callCenterCount = ScamSim.News.NewsFilter.ByType(feed.Items, "call_center").Count;
+            Assert.AreEqual(feed.Items.Count, _session.NewsView.CardCount);
+            foreach (Button practice in Root.Query<Button>("practice").ToList())
+                Assert.IsFalse(practice.enabledSelf, "practising a case is not available in v0.1");
+            AssertAllTextIsLocalized();
+            yield return Shot("08_news");
+
+            Click("filter-call_center");
+            yield return Frames(2);
+            Assert.AreEqual("call_center", _session.NewsView.ActiveType);
+            Assert.AreEqual(callCenterCount, _session.NewsView.CardCount);
+            yield return Shot("09_news_filtered");
+
+            Click("filter-all");
+            yield return Frames(1);
+            Assert.AreEqual(feed.Items.Count, _session.NewsView.CardCount);
+
+            Click("back");
+            yield return Frames(2);
+            Assert.AreEqual(GameSession.GameScreen.Intro, _session.Screen);
+        }
+
+        [UnityTest]
         public IEnumerator HangingUpMidCallShowsTheHangUpResult()
         {
             Click("start");

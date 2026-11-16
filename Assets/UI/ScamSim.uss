@@ -413,6 +413,142 @@ Button:active {
     margin: 8px 4px;
 }
 
+/* ---- News -------------------------------------------------------------------------------- */
+
+.news {
+    padding: 20px 20px 0 20px;
+}
+
+.news-header {
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.back-button {
+    margin: 0 16px 0 0;
+    min-height: 56px;
+    padding: 8px 20px;
+}
+
+.news-title {
+    font-size: 36px;
+    flex-grow: 1;
+}
+
+.news-status {
+    margin: 8px 0 4px 0;
+    flex-shrink: 0;
+}
+
+.filter-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    margin-bottom: 8px;
+}
+
+.filter-chip {
+    font-size: 20px;
+    min-height: 48px;
+    padding: 6px 16px;
+    margin: 6px 8px 0 0;
+    border-radius: 24px;
+    background-color: rgb(38, 44, 74);
+    border-color: rgb(84, 90, 124);
+    color: rgb(220, 226, 240);
+}
+
+.filter-chip:hover {
+    border-color: rgb(255, 200, 61);
+}
+
+.filter-chip.selected {
+    background-color: rgb(255, 200, 61);
+    border-color: rgb(176, 124, 12);
+    color: rgb(48, 32, 4);
+}
+
+.news-list {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.news-card {
+    flex-shrink: 0;
+    border-width: 4px;
+    border-radius: 22px;
+    border-color: rgb(52, 58, 92);
+    background-color: rgb(32, 37, 64);
+    padding: 14px 18px;
+    margin-bottom: 14px;
+}
+
+.news-card-top {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.news-date {
+    font-size: 18px;
+    color: rgb(170, 178, 204);
+    margin: 0;
+    padding: 0;
+}
+
+.news-tag {
+    border-width: 4px;
+    border-radius: 14px;
+    padding: 0 12px 2px 12px;
+    background-color: rgb(255, 128, 92);
+    border-color: rgb(178, 66, 40);
+}
+
+.news-tag-text {
+    font-size: 18px;
+    color: rgb(44, 14, 6);
+    margin: 0;
+    padding: 0;
+}
+
+/* One colour per scam type, so the list can be scanned at a glance. */
+.news-tag.type-romance { background-color: rgb(255, 154, 190); border-color: rgb(176, 70, 112); }
+.news-tag.type-investment { background-color: rgb(255, 200, 61); border-color: rgb(176, 124, 12); }
+.news-tag.type-parcel { background-color: rgb(196, 160, 255); border-color: rgb(108, 72, 176); }
+.news-tag.type-job { background-color: rgb(102, 196, 232); border-color: rgb(30, 116, 156); }
+.news-tag.type-loan { background-color: rgb(170, 226, 120); border-color: rgb(84, 140, 40); }
+.news-tag.type-other { background-color: rgb(200, 204, 220); border-color: rgb(110, 116, 140); }
+
+.news-headline {
+    -unity-font: url("/Assets/Fonts/NotoSansThai-Bold.ttf");
+    font-size: 26px;
+    white-space: normal;
+    margin: 8px 0 4px 0;
+    padding: 0;
+}
+
+.news-summary {
+    font-size: 21px;
+    white-space: normal;
+    color: rgb(214, 220, 236);
+    margin: 0;
+    padding: 0;
+}
+
+.news-facts {
+    font-size: 18px;
+    white-space: normal;
+    color: rgb(255, 196, 176);
+    margin: 8px 0 0 0;
+    padding: 0;
+}
+
+.news-card .button-row > .secondary-button {
+    font-size: 20px;
+    min-height: 52px;
+}
+
 /* ---- Debrief ----------------------------------------------------------------------------- */
 
 .debrief-scroll {

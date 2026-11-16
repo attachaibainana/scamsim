@@ -11,6 +11,7 @@
         <ui:Label class="title bold" text="@intro.title" />
         <ui:Label class="body" text="@intro.subtitle" />
         <ui:Button name="start" class="primary-button" text="@intro.start" />
+        <ui:Button name="news" class="secondary-button" text="@news.title" />
         <ui:Label class="small body" text="@intro.privacy" />
         <ui:Label name="mode" class="small body mode" />
     </ui:VisualElement>

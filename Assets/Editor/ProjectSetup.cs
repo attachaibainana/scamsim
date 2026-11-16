@@ -26,6 +26,7 @@ namespace ScamSim.EditorTools
         public const string IntroPath = UiFolder + "/Intro.uxml";
         public const string CallPath = UiFolder + "/Call.uxml";
         public const string DebriefPath = UiFolder + "/Debrief.uxml";
+        public const string NewsPath = UiFolder + "/News.uxml";
         public const string LocalizationPath = "Assets/Localization/th.json";
         public const string ScenarioPath = "Assets/Scenarios/police_scripted.json";
         public const string ScammerPromptPath = "Assets/Prompts/scammer_police.txt";
@@ -106,6 +107,7 @@ namespace ScamSim.EditorTools
             Set(serialized, "introLayout", Load<VisualTreeAsset>(IntroPath));
             Set(serialized, "callLayout", Load<VisualTreeAsset>(CallPath));
             Set(serialized, "debriefLayout", Load<VisualTreeAsset>(DebriefPath));
+            Set(serialized, "newsLayout", Load<VisualTreeAsset>(NewsPath));
             serialized.ApplyModifiedPropertiesWithoutUndo();
 
             if (!EditorSceneManager.SaveScene(scene, ScenePath)) throw new IOException("Could not save " + ScenePath);
