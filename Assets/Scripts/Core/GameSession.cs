@@ -42,6 +42,7 @@ namespace ScamSim.Core
         public GameScreen Screen { get; private set; }
         public CallSession Call { get; private set; }
         public CallScreen CallView { get; private set; }
+        public DebriefScreen DebriefView { get; private set; }
         public string LogDirectory { get; private set; }
 
         public float MinTypingSeconds
@@ -117,8 +118,9 @@ namespace ScamSim.Core
             if (Call == null) return;
             var debrief = new DebriefScreen(Mount(debriefLayout), Call);
             debrief.PlayAgainClicked += StartCall;
+            debrief.HomeClicked += ShowIntro;
             _screen = debrief;
-            CallView = null;
+            DebriefView = debrief;
             Screen = GameScreen.Debrief;
         }
 
@@ -137,6 +139,8 @@ namespace ScamSim.Core
         VisualElement Mount(VisualTreeAsset layout)
         {
             CloseScreen();
+            CallView = null;
+            DebriefView = null;
             EnsurePhone();
             _phone.Clear();
 

@@ -95,10 +95,26 @@ namespace ScamSim.Tests
             Assert.AreEqual(GameSession.GameScreen.Debrief, _session.Screen);
             Assert.AreEqual(Loc.T("debrief.result.escaped"), Root.Q<Label>("result").text);
             Assert.AreEqual(3, Root.Q("lessons").childCount);
+            Assert.AreEqual(DebriefSummary.From(_session.Call.Logger.Latest).Items.Count, Root.Q("timeline").childCount);
+            Assert.Greater(Root.Query(className: "flag-chip").Class("noticed").ToList().Count, 0);
+            Assert.AreEqual(0, Root.Query(className: "flag-chip").Class("missed").ToList().Count);
             StringAssert.Contains(_session.Call.Logger.FilePath, Root.Q<Label>("log-path").text);
             Assert.IsNull(_session.Call.LastSaveError);
             yield return Shot("06_debrief");
             AssertAllTextIsLocalized();
+
+            Click("export-csv");
+            yield return Frames(2);
+            string csv = _session.DebriefView.ExportedCsvPath;
+            Assert.IsNotNull(csv, Root.Q<Label>("export-status").text);
+            Assert.IsTrue(System.IO.File.Exists(csv));
+            StringAssert.Contains(csv, Root.Q<Label>("export-status").text);
+            Assert.IsTrue(IsVisible("open-folder"));
+
+            ScrollView scroll = Root.Q<ScrollView>("debrief-scroll");
+            scroll.scrollOffset = new Vector2(0, scroll.contentContainer.layout.height);
+            yield return Frames(2);
+            yield return Shot("06b_debrief_timeline");
 
             Click("play-again");
             yield return Frames(2);
@@ -123,9 +139,14 @@ namespace ScamSim.Tests
             yield return WaitUntil(() => _session.Call.IsConcluded, "lessons");
             yield return Frames(2);
             Assert.AreEqual(Loc.T("debrief.result.scammed"), Root.Q<Label>("result").text);
+            Assert.Greater(Root.Query(className: "flag-chip").Class("missed").ToList().Count, 0);
+            StringAssert.Contains(Loc.T("debrief.lost.transfer"), Root.Q<Label>("lost").text);
             yield return Shot("07_debrief_scammed");
 
-            Click("play-again");
+            Click("home");
+            yield return Frames(2);
+            Assert.AreEqual(GameSession.GameScreen.Intro, _session.Screen);
+            Click("start");
             yield return Frames(2);
             Click("decline");
             yield return WaitUntil(() => _session.Screen == GameSession.GameScreen.Debrief, "debrief after declining");

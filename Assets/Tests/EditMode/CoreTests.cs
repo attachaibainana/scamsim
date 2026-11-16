@@ -690,12 +690,13 @@ namespace ScamSim.Tests
                     used.Add(match.Groups[1].Value);
             }
 
-            // Keys built from an end reason at runtime.
+            // Keys built at runtime from an end reason or a goal.
             foreach (string reason in new[] { EndReasons.Scammed, EndReasons.Escaped, EndReasons.HungUp })
             {
                 used.Add("debrief.result." + reason);
                 used.Add("debrief.detail." + reason);
             }
+            foreach (string goal in DebriefSummary.GoalKeys) used.Add("debrief.lost." + goal);
 
             Assert.Greater(used.Count, 20);
             foreach (string key in used) Assert.IsTrue(Loc.Has(key), "th.json is missing " + key);

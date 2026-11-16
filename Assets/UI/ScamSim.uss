@@ -391,11 +391,118 @@ Button:active {
     align-items: center;
 }
 
+.secondary-button {
+    background-color: rgb(52, 58, 92);
+    border-color: rgb(28, 32, 56);
+    color: rgb(240, 242, 250);
+    min-height: 60px;
+}
+
+.secondary-button:hover {
+    background-color: rgb(66, 74, 112);
+}
+
+.button-row {
+    flex-direction: row;
+    flex-shrink: 0;
+}
+
+.button-row > .secondary-button {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin: 8px 4px;
+}
+
 /* ---- Debrief ----------------------------------------------------------------------------- */
 
-.debrief {
-    justify-content: center;
+.debrief-scroll {
+    flex-grow: 1;
 }
+
+.debrief {
+    padding-bottom: 48px;
+}
+
+.lost {
+    color: rgb(255, 170, 150);
+}
+
+.score {
+    font-size: 30px;
+    -unity-text-align: middle-center;
+    margin-bottom: 4px;
+}
+
+.legend {
+    margin-bottom: 10px;
+}
+
+.timeline-item {
+    flex-shrink: 0;
+    border-width: 4px;
+    border-radius: 20px;
+    border-color: rgb(52, 58, 92);
+    background-color: rgb(32, 37, 64);
+    padding: 12px 16px;
+    margin-bottom: 10px;
+}
+
+.timeline-line {
+    white-space: normal;
+    font-size: 22px;
+    color: rgb(255, 196, 176);
+    margin: 0;
+    padding: 0;
+}
+
+.timeline-reply {
+    white-space: normal;
+    font-size: 20px;
+    color: rgb(170, 226, 206);
+    margin: 8px 0 0 0;
+    padding: 0;
+}
+
+.flag-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 6px;
+}
+
+.flag-chip {
+    flex-shrink: 0;
+    max-width: 100%;
+    border-width: 4px;
+    border-radius: 16px;
+    padding: 2px 12px 4px 12px;
+    margin: 6px 6px 0 0;
+}
+
+.flag-chip-text {
+    white-space: normal;
+    font-size: 18px;
+    margin: 0;
+    padding: 0;
+}
+
+.flag-chip.noticed {
+    background-color: rgb(118, 226, 196);
+    border-color: rgb(40, 140, 110);
+}
+
+.flag-chip.missed {
+    background-color: rgb(255, 128, 92);
+    border-color: rgb(178, 66, 40);
+}
+
+.flag-chip.ended {
+    background-color: rgb(120, 126, 156);
+    border-color: rgb(72, 78, 108);
+}
+
+.flag-chip.noticed .flag-chip-text { color: rgb(8, 40, 32); }
+.flag-chip.missed .flag-chip-text { color: rgb(44, 14, 6); }
+.flag-chip.ended .flag-chip-text { color: rgb(240, 242, 250); }
 
 .result-title {
     font-size: 56px;
