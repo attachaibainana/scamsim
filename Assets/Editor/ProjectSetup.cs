@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using ScamSim.Core;
-using Unity.VectorGraphics.Editor;
-using ViewportOptions = Unity.VectorGraphics.ViewportOptions;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
@@ -36,22 +34,23 @@ namespace ScamSim.EditorTools
         public const string ScenePath = "Assets/Scenes/Main.unity";
         public const string DefaultWindowsOutput = "Builds/Windows/ScamSim.exe";
 
-        public static readonly string[] CharacterArt =
-        {
-            "Assets/Art/Characters/pip.svg",
-            "Assets/Art/Characters/pip_scammer.svg",
-            "Assets/Art/Characters/pip_silhouette.svg"
-        };
-
         public const string ProductName = "ScamSim";
         public const string Version = "0.1.0";
 
         /// <summary>
-        /// Screens are laid out for an 800px-high window and scaled by height. A 1080p screen shows
-        /// everything 1.35x larger (the smallest 18px text becomes 24px), which older players need;
-        /// a 768px laptop browser still keeps it at about the PRD's 18px minimum.
+        /// The game is a 16:9 visual-novel stage laid out at 1422x800 (ScamSim.uss .stage). "Expand"
+        /// scales by the smaller of width/1422 and height/800, so the panel is never smaller than the
+        /// stage and any window shape shows the whole stage with dark bars ("Shrink" uses the larger
+        /// ratio and crops the stage in a wide browser window). A 1080p screen shows everything 1.35x
+        /// larger (the smallest 18px text becomes 24px), which older players need.
         /// </summary>
-        static readonly Vector2Int ReferenceResolution = new Vector2Int(1280, 800);
+        public static readonly Vector2Int ReferenceResolution = new Vector2Int(1422, 800);
+
+        /// <summary>The Windows build opens in a 16:9 window the player can resize.</summary>
+        static readonly Vector2Int WindowSize = new Vector2Int(1600, 900);
+
+        /// <summary>Our page template (Assets/WebGLTemplates/ScamSim): the canvas fills the browser window.</summary>
+        public const string WebGLTemplate = "PROJECT:ScamSim";
 
         public const string DefaultWebGLOutput = "Builds/WebGL";
         static readonly Color Background = new Color32(16, 19, 33, 255);
@@ -77,34 +76,45 @@ namespace ScamSim.EditorTools
             settings.themeStyleSheet = theme;
             settings.scaleMode = PanelScaleMode.ScaleWithScreenSize;
             settings.referenceResolution = ReferenceResolution;
-            settings.screenMatchMode = PanelScreenMatchMode.MatchWidthOrHeight;
+            settings.screenMatchMode = PanelScreenMatchMode.Expand;
             settings.match = 1f;
             EditorUtility.SetDirty(settings);
             AssetDatabase.SaveAssets();
             return settings;
         }
 
-        /// <summary>
-        /// Character art is SVG (PRD 2.7) imported as UI Toolkit vector images, so it stays sharp at any
-        /// screen size. The whole viewBox is kept, so every character lines up the same way.
-        /// </summary>
-        [MenuItem("ScamSim/Import Character Art")]
-        public static void EnsureCharacterImport()
+        /// <summary>Window size and template for both players: a resizable 16:9 window, a full-page canvas.</summary>
+        static void ApplyPlayerSettings()
         {
-            foreach (string path in CharacterArt)
-            {
-                var importer = AssetImporter.GetAtPath(path) as SVGImporter;
-                if (importer == null) throw new IOException("No SVG importer for " + path);
-                if (importer.SvgType == SVGType.VectorImage && importer.ViewportOptions == ViewportOptions.PreserveViewport
-                    && importer.PreserveViewport) continue;
+            PlayerSettings.productName = ProductName;
+            PlayerSettings.bundleVersion = Version;
+            PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
+            PlayerSettings.defaultScreenWidth = WindowSize.x;
+            PlayerSettings.defaultScreenHeight = WindowSize.y;
+            PlayerSettings.resizableWindow = true;
+            PlayerSettings.WebGL.template = WebGLTemplate;
+        }
 
-                importer.SvgType = SVGType.VectorImage;
-                importer.ViewportOptions = ViewportOptions.PreserveViewport;
-                importer.PreserveViewport = true;
-                EditorUtility.SetDirty(importer);
-                importer.SaveAndReimport();
-                Debug.Log("[ProjectSetup] " + path + ": " + importer.SvgType + ", " + importer.ViewportOptions
-                          + " (" + (int)importer.ViewportOptions + "), preserve " + importer.PreserveViewport);
+        /// <summary>
+        /// Re-imports the scene and character pictures with ArtImport's settings. New files get them on
+        /// their own; run this after changing ArtImport.
+        /// </summary>
+        [MenuItem("ScamSim/Reimport Art")]
+        public static void ReimportArt()
+        {
+            AssetDatabase.StartAssetEditing();
+            try
+            {
+                foreach (string folder in ArtImport.Folders)
+                {
+                    if (!AssetDatabase.IsValidFolder(folder)) continue;
+                    foreach (string guid in AssetDatabase.FindAssets("t:Texture2D", new[] { folder }))
+                        AssetDatabase.ImportAsset(AssetDatabase.GUIDToAssetPath(guid), ImportAssetOptions.ForceUpdate);
+                }
+            }
+            finally
+            {
+                AssetDatabase.StopAssetEditing();
             }
         }
 
@@ -114,10 +124,7 @@ namespace ScamSim.EditorTools
             // From the menu, give the developer the chance to keep unsaved scene edits first.
             if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
 
-            PlayerSettings.productName = ProductName;
-            PlayerSettings.bundleVersion = Version;
-
-            EnsureCharacterImport();
+            ApplyPlayerSettings();
             EnsurePanelSettings();
             Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
 
@@ -166,18 +173,20 @@ namespace ScamSim.EditorTools
         /// <summary>Windows build of Main.unity. Honors -buildOutput from `unity build -o`.</summary>
         public static void BuildWindows()
         {
+            ApplyPlayerSettings();
             Build(BuildTarget.StandaloneWindows64, ArgumentAfter("-buildOutput") ?? DefaultWindowsOutput);
         }
 
         /// <summary>
         /// WebGL build for the demo link (PRD 3). This method owns the web compression settings:
         /// Gzip with the decompression fallback, so the files work on any static host without special
-        /// server headers (GitHub Pages included). The canvas size and page template are not set yet
-        /// (to do with the first tested WebGL build). The web build never reads config.json, so it
-        /// always plays the offline scenario.
+        /// server headers (GitHub Pages included). The page is our own template: the canvas fills the
+        /// window and the game keeps its 16:9 stage inside. The web build never reads config.json, so
+        /// it always plays the offline scenario.
         /// </summary>
         public static void BuildWebGL()
         {
+            ApplyPlayerSettings();
             PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
             PlayerSettings.WebGL.decompressionFallback = true;
             Build(BuildTarget.WebGL, ArgumentAfter("-buildOutput") ?? DefaultWebGLOutput);

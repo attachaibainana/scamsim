@@ -18,6 +18,19 @@ namespace ScamSim.UI
         {
             root.Query<TextElement>().ForEach(Localize);
             root.Query<Button>().ForEach(b => b.RemoveFromClassList(Button.ussClassName));
+            root.Query<ScrollView>().ForEach(TuneWheel);
+        }
+
+        /// <summary>
+        /// Panel pixels scrolled per unit of mouse-wheel delta. Measured in the WebGL build: one wheel
+        /// notch (Chrome deltaY 100) arrives as 3 units, so the default (18) moved a list only 54px per
+        /// notch. 40 moves about 120px, a third of a debrief card list's visible height.
+        /// </summary>
+        public const float WheelScrollSize = 40f;
+
+        public static void TuneWheel(ScrollView scroll)
+        {
+            scroll.mouseWheelScrollSize = WheelScrollSize;
         }
 
         public static void Localize(TextElement element)

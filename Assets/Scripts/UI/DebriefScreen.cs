@@ -42,8 +42,12 @@ namespace ScamSim.UI
             result.text = Loc.T("debrief.result." + reason);
             result.AddToClassList(reason);
             UiKit.Require<Label>(root, "result-detail").text = Loc.T("debrief.detail." + reason);
-            // The caller's face is revealed only when the scam worked; otherwise PIP is shown safe.
-            UiKit.Require<VisualElement>(root, "debrief-character").AddToClassList(reason == EndReasons.Scammed ? "scammer" : "player");
+            // The reveal: the "police officer" is shown as the call-centre scammer he really is, pleased
+            // when the scam worked and annoyed when it did not. PIP comforts or cheers the player.
+            bool scammed = reason == EndReasons.Scammed;
+            UiKit.Require<VisualElement>(root, "reveal-sprite").AddToClassList(scammed ? "real-smug" : "real-annoyed");
+            UiKit.Require<VisualElement>(root, "debrief-pip").AddToClassList(scammed ? "pip-worried" : "pip-happy");
+            UiKit.Require<Label>(root, "pip-says").text = Loc.T(scammed ? "debrief.pip_scammed" : "debrief.pip_safe");
 
             _lost = UiKit.Require<Label>(root, "lost");
             _score = UiKit.Require<Label>(root, "score");

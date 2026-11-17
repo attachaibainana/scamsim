@@ -1,11 +1,22 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
-    <ui:VisualElement name="intro" class="screen intro">
-        <ui:VisualElement name="pip" class="character pip" />
-        <ui:Label class="title bold" text="@intro.title" />
-        <ui:Label class="body" text="@intro.subtitle" />
-        <ui:Button name="start" class="primary-button" text="@intro.start" />
-        <ui:Button name="news" class="secondary-button" text="@news.title" />
-        <ui:Label class="small body" text="@intro.privacy" />
-        <ui:Label name="mode" class="small body mode" />
+    <ui:VisualElement name="intro" class="screen vn intro">
+        <ui:VisualElement class="scene street" picking-mode="Ignore" />
+        <ui:VisualElement class="shade soft" picking-mode="Ignore" />
+
+        <ui:VisualElement class="intro-guide" picking-mode="Ignore">
+            <ui:VisualElement class="say-bubble" picking-mode="Ignore">
+                <ui:Label class="say-text" text="@intro.pip_hello" />
+            </ui:VisualElement>
+            <ui:VisualElement name="pip" class="pip pip-happy intro-pip" picking-mode="Ignore" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="panel intro-panel">
+            <ui:Label class="title bold" text="@intro.title" />
+            <ui:Label class="body" text="@intro.subtitle" />
+            <ui:Button name="start" class="primary-button" text="@intro.start" />
+            <ui:Button name="news" class="secondary-button" text="@news.title" />
+            <ui:Label class="small body" text="@intro.privacy" />
+            <ui:Label name="mode" class="small body mode" />
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

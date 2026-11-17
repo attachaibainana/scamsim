@@ -65,6 +65,7 @@ namespace ScamSim.Tests
             Click("accept");
             yield return WaitForAnswer();
             Assert.AreEqual(3, _session.CallView.OptionButtons.Count);
+            AssertCallerFaceMatchesPressure();
             yield return Shot("03_first_line");
 
             // A typed refusal, then the resist option every turn.
@@ -79,7 +80,9 @@ namespace ScamSim.Tests
                 if (!shotHighPressure && _session.Call.CurrentLine.PressureLevel >= 4)
                 {
                     shotHighPressure = true;
-                    yield return new WaitForSecondsRealtime(1f); // let the background colour finish its transition
+                    AssertCallerFaceMatchesPressure();
+                    Assert.AreNotEqual(CallScreen.ExprCalm, _session.CallView.CallerExpression);
+                    yield return new WaitForSecondsRealtime(1f); // let the red tint finish its transition
                     yield return Shot("04_high_pressure");
                 }
                 ClickOption(Stance.Resist);
@@ -200,12 +203,62 @@ namespace ScamSim.Tests
             ClickOption(Stance.Hesitate);
             yield return WaitForAnswer();
 
+            // The history panel lists every line so far and leaves the answers usable.
+            Assert.IsFalse(_session.CallView.HistoryOpen);
+            Click("history-toggle");
+            yield return Frames(2);
+            Assert.IsTrue(_session.CallView.HistoryOpen);
+            Assert.AreEqual(3, Root.Q<ScrollView>("messages").contentContainer.childCount, "line, reply, line");
+            Assert.IsTrue(IsVisible("answer-area"));
+            yield return Shot("03b_history");
+            Click("history-toggle");
+            yield return Frames(1);
+            Assert.IsFalse(_session.CallView.HistoryOpen);
+
             Click("hangup");
             yield return WaitUntil(() => IsVisible("call-footer"), "the see-result button");
             Click("see-result");
             yield return WaitUntil(() => _session.Call.IsConcluded, "lessons");
             yield return Frames(2);
             Assert.AreEqual(Loc.T("debrief.result.hung_up"), Root.Q<Label>("result").text);
+        }
+
+        /// <summary>
+        /// The 16:9 stage must fit whole inside any window shape (dark bars at the sides or top), not be
+        /// cropped. A browser window is rarely 16:9; the tests above all run at 1920x1080.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator StageFitsInsideWideAndTallWindows()
+        {
+            // The document already draws through the test copy of the panel settings made in setup;
+            // point that copy at a texture of each window shape, then back.
+            PanelSettings settings = _session.Document.panelSettings;
+            foreach (Vector2Int size in new[] { new Vector2Int(2100, 900), new Vector2Int(1200, 1000) })
+            {
+                var texture = new RenderTexture(size.x, size.y, 24, RenderTextureFormat.ARGB32);
+                texture.Create();
+                settings.targetTexture = texture;
+                try
+                {
+                    yield return Frames(3);
+                    Rect window = Root.worldBound;
+                    Rect stage = Root.Q("stage").worldBound;
+                    string where = size.x + "x" + size.y + ": stage " + stage + " in window " + window;
+                    Assert.GreaterOrEqual(stage.xMin, window.xMin - 1f, where);
+                    Assert.GreaterOrEqual(stage.yMin, window.yMin - 1f, where);
+                    Assert.LessOrEqual(stage.xMax, window.xMax + 1f, where);
+                    Assert.LessOrEqual(stage.yMax, window.yMax + 1f, where);
+                    // It fills the window in one direction, so nothing is shrunk more than needed.
+                    Assert.IsTrue(Mathf.Abs(stage.width - window.width) < 1f || Mathf.Abs(stage.height - window.height) < 1f, where);
+                    yield return UiCapture.Save(texture, "10_stage_" + size.x + "x" + size.y);
+                }
+                finally
+                {
+                    settings.targetTexture = _texture;
+                    texture.Release();
+                    UnityEngine.Object.Destroy(texture);
+                }
+            }
         }
 
         // ---- Helpers ---------------------------------------------------------------------------
@@ -242,6 +295,14 @@ namespace ScamSim.Tests
                 }
             }
             Assert.Fail("no " + stance + " option on screen");
+        }
+
+        /// <summary>The caller's face follows the pressure of the line on screen: 1-2 calm, 3-4 stern, 5 angry.</summary>
+        void AssertCallerFaceMatchesPressure()
+        {
+            int level = _session.Call.CurrentLine.PressureLevel;
+            string expected = level >= 5 ? CallScreen.ExprAngry : level >= 3 ? CallScreen.ExprStern : CallScreen.ExprCalm;
+            Assert.AreEqual(expected, _session.CallView.CallerExpression, "pressure " + level);
         }
 
         bool IsVisible(string name)

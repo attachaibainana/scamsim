@@ -1,0 +1,9 @@
+Mascot sprite. Portrait image (1024x1536).
+
+The attached image is the owner's own mascot sheet. Redraw the character labelled "A PIP" (the large one on the left): a mint-green rounded square blob body, two thin antennae with yellow ball tips, small black oval dot eyes, pink blush on the cheeks, a red-pink heart on the front of the body, short stubby arms and legs, thick dark navy outline. Keep PIP's exact design, face, proportions and colours (no mouth, no extra features). Render it as a polished mascot that sits comfortably in a modern anime visual novel: clean lineart, soft cel shading, a subtle glossy highlight.
+
+Pose: cheerful and welcoming, waving one hand, a small happy bounce. Full body, centred, the whole character inside the frame with margin.
+
+Do not include the phone, the red masked character, the labels or the panels from the reference sheet.
+
+Background: a perfectly flat, solid, pure magenta (#FF00FF) colour filling the entire background. No gradient, no floor, no cast shadow on the background, and no magenta anywhere on the character.

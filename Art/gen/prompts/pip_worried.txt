@@ -1,0 +1,7 @@
+Mascot sprite, an expression variant. Portrait image (1024x1536).
+
+The attached image (pip_happy.png) is the mascot PIP. Draw the SAME character with exactly the same design, colours, outline, shading, art style and scale (full body, centred, whole character inside the frame with margin). Keep PIP's face: dot eyes, blush, no mouth. The red-pink heart on the front of the body is PIP's signature and must stay clearly visible, the same size and place as in the reference (the hands are at the cheeks, above the heart, not covering it).
+
+Expression and pose: worried and sympathetic, as if it just watched a friend get tricked. Both little hands pressed to its cheeks, antennae drooping, eyes looking slightly upward with worried eyebrow marks, one small sweat drop beside its head.
+
+Background: a perfectly flat, solid, pure magenta (#FF00FF) colour filling the entire background. No gradient, no floor, no cast shadow on the background, and no magenta anywhere on the character.

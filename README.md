@@ -2,11 +2,11 @@
 
 **A phone-scam training simulator and research testbed.** An AI plays a fake Thai "cyber police" caller who adapts to what you say; you practise spotting the tricks and hanging up. Every decision is logged for research.
 
-![Incoming call](docs/screenshots/02_ringing.png)
+![Incoming call](docs/screenshots/02_ringing.jpg)
 
 | The call | Pressure rises when you push back | The debrief |
 |---|---|---|
-| ![First line](docs/screenshots/03_first_line.png) | ![High pressure](docs/screenshots/04_high_pressure.png) | ![Debrief](docs/screenshots/06_debrief.png) |
+| ![First line](docs/screenshots/03_first_line.jpg) | ![High pressure](docs/screenshots/04_high_pressure.jpg) | ![Debrief](docs/screenshots/06_debrief.jpg) |
 
 ## The problem
 
@@ -78,10 +78,14 @@ Assets/
   Prompts/           scammer_police.txt, lessons.txt (versioned: the first line is the prompt_version)
   Scenarios/         police_scripted.json (offline branching scenario)
   StreamingAssets/   news.json
-  UI/                UXML layouts, ScamSim.uss
-  Art/Characters/    PIP character art (SVG)
+  UI/                UXML layouts, ScamSim.uss (a 16:9 visual-novel stage, 1422x800, scaled to fit)
+  Art/Backgrounds/   painted scenes: street, living room, call centre
+  Art/Characters/    the fake police caller (3 moods), his real self (2), PIP the guide (2)
+  WebGLTemplates/    the web page: the canvas fills the browser window
   Localization/      th.json (every UI string)
   Tests/             EditMode and PlayMode tests
+Art/gen/prompts/     the briefs the game art was generated from
+tools/art/           gen.ps1 (asks Codex to draw one image), process.py (removes the chroma backdrop, crops)
 ```
 
 ## Roadmap
@@ -93,4 +97,4 @@ Assets/
 
 ## Credits and licence
 
-Code: MIT (see `LICENSE`). Font: IBM Plex Sans Thai Looped (a looped Thai face with matching Latin), SIL Open Font License (`Assets/Fonts/OFL.txt`). News items keep only a headline, our own summary, the source name and a link to the original report. The scammer persona and unit name are fictional; the prompt forbids real account numbers, links, people and agency names.
+Code: MIT (see `LICENSE`). Scenes and characters were generated with Codex image generation from the briefs in `Art/gen/prompts/`; PIP is the project owner's own design. Font: IBM Plex Sans Thai Looped (a looped Thai face with matching Latin), SIL Open Font License (`Assets/Fonts/OFL.txt`). News items keep only a headline, our own summary, the source name and a link to the original report. The scammer persona and unit name are fictional; the prompt forbids real account numbers, links, people and agency names.

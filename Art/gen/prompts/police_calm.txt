@@ -1,0 +1,5 @@
+Visual-novel character sprite. Portrait image (1024x1536). One character only, knee-up (from the top of the head to just above the knees), facing the viewer at a slight three-quarter angle, centred, the whole figure inside the frame with a small margin (the head must not be cropped).
+
+Character: a Thai man about 35 years old, short neat black hair, clean-cut and trustworthy-looking face. He wears a khaki-brown police-style uniform shirt with dark epaulettes and a fictional abstract round badge (no real insignia, no name tag, no text), dark trousers and a black belt. He holds a smartphone to his right ear. Expression: calm, polite, professional smile, as if reassuring someone on the phone. Left arm relaxed.
+
+Background: a perfectly flat, solid, pure green (#00FF00) chroma-key colour filling the entire background. No gradient, no floor, no cast shadow on the background, and no green anywhere on the character.

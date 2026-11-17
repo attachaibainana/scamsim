@@ -1,11 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
-    <ui:VisualElement name="news" class="screen news">
-        <ui:VisualElement class="news-header">
-            <ui:Button name="back" class="secondary-button back-button" text="@news.back" />
-            <ui:Label class="news-title bold" text="@news.title" />
+    <ui:VisualElement name="news-screen" class="screen vn news-screen">
+        <ui:VisualElement class="scene street" picking-mode="Ignore" />
+        <ui:VisualElement class="shade" picking-mode="Ignore" />
+        <ui:VisualElement name="news" class="panel news">
+            <ui:VisualElement class="news-header">
+                <ui:Button name="back" class="secondary-button back-button" text="@news.back" />
+                <ui:Label class="news-title bold" text="@news.title" />
+            </ui:VisualElement>
+            <ui:Label name="news-status" class="small news-status" />
+            <ui:VisualElement name="filters" class="filter-row" />
+            <ui:ScrollView name="news-list" class="news-list" mode="Vertical" horizontal-scroller-visibility="Hidden" />
         </ui:VisualElement>
-        <ui:Label name="news-status" class="small news-status" />
-        <ui:VisualElement name="filters" class="filter-row" />
-        <ui:ScrollView name="news-list" class="news-list" mode="Vertical" horizontal-scroller-visibility="Hidden" />
     </ui:VisualElement>
 </ui:UXML>

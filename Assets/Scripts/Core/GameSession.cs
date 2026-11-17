@@ -43,7 +43,7 @@ namespace ScamSim.Core
 
         ScriptedProvider _scripted;
         ILLMProvider _provider;
-        VisualElement _phone;
+        VisualElement _stage;
         IDisposable _screen;
 
         /// <summary>The scammer for new calls: Claude when config.json has an API key, otherwise the script.</summary>
@@ -217,7 +217,7 @@ namespace ScamSim.Core
             // the call screen is still handling this same event and must not be torn down under it.
             if (state != CallState.Ended || Call.Manager.EndedByWhat != EndedBy.PlayerDeclined) return;
             CallSession declined = Call;
-            _phone.schedule.Execute(() =>
+            _stage.schedule.Execute(() =>
             {
                 if (Call == declined && Screen == GameScreen.Call) ShowDebrief();
             });
@@ -229,13 +229,13 @@ namespace ScamSim.Core
             CallView = null;
             DebriefView = null;
             NewsView = null;
-            EnsurePhone();
-            _phone.Clear();
+            EnsureStage();
+            _stage.Clear();
 
             TemplateContainer screen = layout.Instantiate();
             screen.style.flexGrow = 1;
             UiKit.Prepare(screen);
-            _phone.Add(screen);
+            _stage.Add(screen);
             return screen;
         }
 
@@ -245,16 +245,20 @@ namespace ScamSim.Core
             _screen = null;
         }
 
-        void EnsurePhone()
+        /// <summary>
+        /// The 16:9 stage every screen is drawn on (1422x800, ScamSim.uss .stage). The panel settings
+        /// scale it to fit the window; the root around it stays dark.
+        /// </summary>
+        void EnsureStage()
         {
             VisualElement root = document.rootVisualElement;
-            if (_phone != null && _phone.parent == root) return;
+            if (_stage != null && _stage.parent == root) return;
 
             if (!root.styleSheets.Contains(styles)) root.styleSheets.Add(styles);
             root.AddToClassList("scamsim-root");
-            _phone = new VisualElement { name = "phone" };
-            _phone.AddToClassList("phone");
-            root.Add(_phone);
+            _stage = new VisualElement { name = "stage" };
+            _stage.AddToClassList("stage");
+            root.Add(_stage);
         }
     }
 }

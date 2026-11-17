@@ -1,0 +1,7 @@
+Visual-novel character sprite, the reveal of the caller's real identity. Portrait image (1024x1536).
+
+The attached image (police_calm.png) shows the uniform this man pretends to wear on the phone. Draw the SAME man (same face, same hair, same art style, lighting, framing and scale: knee-up, bottom of the figure touching the bottom edge), but as his real self, off camera, in a scam call centre: no uniform at all. He wears a wrinkled dark charcoal hoodie over a faded t-shirt, worn jeans, and a cheap call-centre headset with a microphone over his slightly messy hair. He holds a cheap smartphone loosely in one hand.
+
+Expression and pose: a smug, sly, satisfied grin with half-lidded eyes, slouching and relaxed, as if he has just tricked someone. Unpleasant but not cartoonishly evil.
+
+Background: a perfectly flat, solid, pure green (#00FF00) chroma-key colour filling the entire background. No gradient, no floor, no cast shadow on the background, and no green anywhere on the character.

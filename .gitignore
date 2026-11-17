@@ -41,6 +41,13 @@ test-results.xml
 /Assets/StreamingAssets/config.json.meta
 /Logs/
 
+# Style references from other games: kept on this machine only, never published in this public repo.
+/Art/ref/
+
+# Raw images from Codex (tools/art/gen.ps1). Only the processed copies under Assets/Art go to git;
+# the prompts in Art/gen/prompts regenerate them.
+/Art/gen/raw/
+
 # OS
 .DS_Store
 Thumbs.db

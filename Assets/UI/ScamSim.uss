@@ -1,33 +1,33 @@
 /*
- * ScamSim — one style sheet for every screen (PRD 2.7).
- * Rules: rounded shapes, one outline width (4px) everywhere, outline 2 shades darker than its fill,
- * no gradients. Scammer = red/orange, player = mint/blue, one UI accent (yellow). Text >= 18px.
+ * ScamSim — one style sheet for every screen.
+ * Layout (PRD 2.7, update 2026-11-17): a 16:9 visual-novel stage, 1422x800, scaled to fit the window
+ * by the panel settings. Painted scenes and characters (Assets/Art) sit behind the UI.
+ * UI rules kept from the first design: rounded shapes, one outline width (4px), outline darker than
+ * its fill, scammer = red/orange, player = mint/blue, one accent (yellow). Text >= 18px at 800px high.
  */
 
-/* ---- Root and phone frame ---------------------------------------------------------------- */
+/* ---- Root and stage ---------------------------------------------------------------------- */
 
 .scamsim-root {
     flex-grow: 1;
-    flex-direction: row;
     justify-content: center;
+    align-items: center;
     -unity-font: url("/Assets/Fonts/IBMPlexSansThaiLooped-Regular.ttf");
     font-size: 24px;
     color: rgb(245, 247, 250);
-    background-color: rgb(16, 19, 33);
+    background-color: rgb(8, 9, 16);
 }
 
-.phone {
-    flex-grow: 1;
-    max-width: 680px;
-    background-color: rgb(28, 33, 56);
-    border-left-width: 4px;
-    border-right-width: 4px;
-    border-color: rgb(10, 12, 22);
+.stage {
+    width: 1422px;
+    height: 800px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background-color: rgb(16, 19, 33);
 }
 
 .screen {
     flex-grow: 1;
-    padding: 32px 28px;
 }
 
 .bold {
@@ -56,6 +56,77 @@
 
 .hidden {
     display: none;
+}
+
+/* ---- Scene layers -------------------------------------------------------------------------- */
+
+.scene {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.scene.street { background-image: url("/Assets/Art/Backgrounds/bg_street.png"); }
+.scene.living-room { background-image: url("/Assets/Art/Backgrounds/bg_living_room.png"); }
+.scene.call-center { background-image: url("/Assets/Art/Backgrounds/bg_call_center.png"); }
+
+.shade {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(8, 10, 22, 0.62);
+}
+
+.shade.soft {
+    background-color: rgba(8, 10, 22, 0.22);
+}
+
+/* A character standing on the bottom edge of the stage. */
+.sprite {
+    position: absolute;
+    bottom: 0;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.pip {
+    flex-shrink: 0;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.pip-happy { background-image: url("/Assets/Art/Characters/pip_happy.png"); }
+.pip-worried { background-image: url("/Assets/Art/Characters/pip_worried.png"); }
+
+.panel {
+    background-color: rgba(18, 22, 40, 0.9);
+    border-width: 4px;
+    border-color: rgb(60, 68, 104);
+    border-radius: 28px;
+}
+
+/* PIP's speech bubble. */
+.say-bubble {
+    flex-shrink: 0;
+    max-width: 440px;
+    background-color: rgb(250, 248, 240);
+    border-width: 4px;
+    border-color: rgb(60, 68, 104);
+    border-radius: 26px;
+    padding: 12px 20px;
+    margin-bottom: 12px;
+}
+
+.say-text {
+    white-space: normal;
+    font-size: 24px;
+    color: rgb(28, 30, 46);
+    -unity-text-align: middle-center;
+    margin: 0;
+    padding: 0;
 }
 
 /* ---- Buttons ----------------------------------------------------------------------------- */
@@ -89,6 +160,17 @@ Button:active {
     background-color: rgb(255, 214, 104);
 }
 
+.secondary-button {
+    background-color: rgb(52, 58, 92);
+    border-color: rgb(28, 32, 56);
+    color: rgb(240, 242, 250);
+    min-height: 60px;
+}
+
+.secondary-button:hover {
+    background-color: rgb(66, 74, 112);
+}
+
 .option-button {
     background-color: rgb(244, 240, 232);
     border-color: rgb(84, 90, 124);
@@ -105,55 +187,101 @@ Button:active {
     border-color: rgb(102, 214, 170);
 }
 
+.button-row {
+    flex-direction: row;
+    flex-shrink: 0;
+}
+
+.button-row > .secondary-button {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin: 8px 4px;
+}
+
 /* ---- Intro ------------------------------------------------------------------------------- */
 
-.intro {
+.intro-guide {
+    position: absolute;
+    left: 60px;
+    bottom: 36px;
+    width: 560px;
+    height: 700px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.intro-pip {
+    width: 380px;
+    height: 420px;
+}
+
+.intro-panel {
+    position: absolute;
+    right: 56px;
+    top: 56px;
+    bottom: 56px;
+    width: 660px;
+    padding: 24px 40px;
     justify-content: center;
-    align-items: stretch;
-    padding-top: 16px;
-    padding-bottom: 16px;
 }
 
-/* Characters are SVG (Assets/Art/Characters), drawn on a 200x220 canvas. */
-.character {
-    flex-shrink: 0;
-    align-self: center;
-    -unity-background-scale-mode: scale-to-fit;
-}
-
-.pip {
-    width: 150px;
-    height: 165px;
-    margin-bottom: 12px;
-    background-image: url("/Assets/Art/Characters/pip.svg");
-}
-
-/* ---- Call -------------------------------------------------------------------------------- */
+/* ---- Call: ringing ----------------------------------------------------------------------- */
 
 .call {
     padding: 0;
-    transition-property: background-color;
-    transition-duration: 0.8s;
 }
 
-/* Pressure 1..5: the room gets redder as the scammer pushes harder. */
-.call.pressure-1 { background-color: rgb(28, 40, 66); }
-.call.pressure-2 { background-color: rgb(40, 40, 70); }
-.call.pressure-3 { background-color: rgb(68, 40, 66); }
-.call.pressure-4 { background-color: rgb(98, 36, 50); }
-.call.pressure-5 { background-color: rgb(128, 28, 36); }
-
 .ringing {
-    flex-grow: 1;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
     justify-content: center;
     align-items: center;
-    padding: 32px 28px;
+}
+
+.ring-card {
+    width: 540px;
+    padding: 36px 36px 28px 36px;
+    align-items: center;
+    background-color: rgba(18, 22, 40, 0.92);
+    border-width: 4px;
+    border-color: rgb(60, 68, 104);
+    border-radius: 36px;
 }
 
 .caption {
     font-size: 24px;
     color: rgb(190, 198, 222);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
+}
+
+/* The caller is still unknown: a dark circle with a red edge that pulses while it rings. */
+.ring-avatar {
+    width: 168px;
+    height: 168px;
+    border-radius: 84px;
+    border-width: 6px;
+    border-color: rgb(255, 72, 72);
+    background-color: rgb(10, 10, 14);
+    justify-content: center;
+    align-items: center;
+    transition-property: scale, border-color;
+    transition-duration: 0.5s;
+}
+
+.ring-avatar.pulse {
+    scale: 1.08 1.08;
+    border-color: rgb(255, 150, 130);
+}
+
+.ring-avatar-mark {
+    font-size: 84px;
+    color: rgb(255, 96, 80);
+    -unity-text-align: middle-center;
+    margin: 0;
+    padding: 0;
 }
 
 .caller {
@@ -162,54 +290,15 @@ Button:active {
     -unity-text-align: middle-center;
 }
 
-/* The scammer has no face: a black silhouette with a glowing red edge. */
-.avatar-glow {
-    border-width: 4px;
-    border-color: rgba(255, 72, 72, 0.35);
-    padding: 6px;
-    border-radius: 100px;
-}
-
-.avatar {
-    width: 72px;
-    height: 72px;
-    border-radius: 36px;
-    border-width: 4px;
-    border-color: rgb(255, 72, 72);
-    background-color: rgb(10, 10, 14);
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
-
-/* The caller: the scammer's shape in black with a red edge, no face. */
-.avatar-figure {
-    width: 80%;
-    height: 80%;
-    margin-top: 10%;
-    background-image: url("/Assets/Art/Characters/pip_silhouette.svg");
-    -unity-background-scale-mode: scale-to-fit;
-}
-
-.avatar.big {
-    width: 180px;
-    height: 180px;
-    border-radius: 90px;
-}
-
-.avatar-glow.big {
-    border-radius: 110px;
-}
-
 .ring-buttons {
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     align-self: stretch;
-    margin-top: 64px;
+    margin-top: 36px;
 }
 
 .round-button {
-    width: 200px;
+    width: 210px;
     min-height: 80px;
     border-radius: 40px;
     color: rgb(255, 255, 255);
@@ -227,40 +316,261 @@ Button:active {
     color: rgb(255, 255, 255);
 }
 
+/* ---- Call: on the line -------------------------------------------------------------------- */
+
 .in-call {
-    flex-grow: 1;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
 }
 
-.call-header {
+/* The caller as he presents himself; his face follows the pressure level (CallScreen.SetPressure). */
+.caller-sprite {
+    left: 200px;
+    width: 470px;
+    height: 780px;
+}
+
+.caller-sprite.expr-calm { background-image: url("/Assets/Art/Characters/police_calm.png"); }
+.caller-sprite.expr-stern { background-image: url("/Assets/Art/Characters/police_stern.png"); }
+.caller-sprite.expr-angry { background-image: url("/Assets/Art/Characters/police_angry.png"); }
+
+/* Pressure 1..5: the room gets redder as the scammer pushes harder. */
+.pressure-tint {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(170, 20, 30, 0);
+    transition-property: background-color;
+    transition-duration: 0.8s;
+}
+
+.call.pressure-1 .pressure-tint { background-color: rgba(170, 20, 30, 0); }
+.call.pressure-2 .pressure-tint { background-color: rgba(170, 20, 30, 0.06); }
+.call.pressure-3 .pressure-tint { background-color: rgba(170, 20, 30, 0.14); }
+.call.pressure-4 .pressure-tint { background-color: rgba(170, 20, 30, 0.24); }
+.call.pressure-5 .pressure-tint { background-color: rgba(170, 20, 30, 0.34); }
+
+.call-topbar {
     flex-shrink: 0;
     flex-direction: row;
     align-items: center;
-    padding: 16px 20px;
-    border-bottom-width: 4px;
-    border-color: rgba(0, 0, 0, 0.35);
-    background-color: rgba(0, 0, 0, 0.2);
+    padding: 16px 24px 0 24px;
 }
 
-.call-header .caller {
+.call-status {
     flex-grow: 1;
-    font-size: 26px;
-    margin: 0 16px;
-    -unity-text-align: middle-left;
+    flex-direction: row;
 }
 
-.hangup-button {
+.call-status-pill {
+    flex-direction: row;
+    align-items: center;
+    padding: 6px 20px;
+    background-color: rgba(18, 22, 40, 0.88);
+    border-width: 4px;
+    border-color: rgb(60, 68, 104);
+    border-radius: 26px;
+}
+
+.live-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: rgb(255, 72, 72);
+    margin-right: 12px;
+}
+
+.call-status-text {
+    font-size: 22px;
     margin: 0;
-    min-height: 56px;
-    padding: 8px 20px;
+    padding: 0;
 }
 
-.messages {
+.topbar-button {
+    margin: 0 0 0 12px;
+    min-height: 56px;
+    padding: 6px 22px;
+    font-size: 22px;
+}
+
+.call-middle {
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 12px 24px 0 24px;
+}
+
+.answer-area {
+    width: 560px;
+    padding: 12px 16px 8px 16px;
+    background-color: rgba(18, 22, 40, 0.88);
+    border-width: 4px;
+    border-color: rgb(60, 68, 104);
+    border-radius: 26px;
+}
+
+.answer-hint {
+    font-size: 20px;
+    color: rgb(200, 206, 226);
+    margin-bottom: 2px;
+}
+
+/* The dialogue box: the newest line, and the place to type a reply. */
+.dialogue-box {
+    flex-shrink: 0;
+    min-height: 168px;
+    margin: 20px 24px 20px 24px;
+    padding: 30px 32px 20px 32px;
+    background-color: rgba(14, 18, 34, 0.93);
+    border-width: 4px;
+    border-color: rgb(84, 90, 124);
+    border-radius: 26px;
+}
+
+.name-tag {
+    position: absolute;
+    top: -24px;
+    left: 28px;
+    padding: 2px 18px 4px 18px;
+    font-size: 22px;
+    border-width: 4px;
+    border-radius: 18px;
+    background-color: rgb(255, 128, 92);
+    border-color: rgb(178, 66, 40);
+    color: rgb(44, 14, 6);
+}
+
+.name-tag.you {
+    background-color: rgb(118, 226, 196);
+    border-color: rgb(40, 140, 110);
+    color: rgb(8, 40, 32);
+}
+
+.dialogue-line {
+    font-size: 28px;
+    white-space: normal;
+    color: rgb(245, 247, 250);
+    margin: 0;
+    padding: 0;
+}
+
+.dialogue-line.notice {
+    color: rgb(200, 206, 226);
+}
+
+.typing {
+    font-size: 22px;
+    color: rgb(255, 170, 150);
+    margin: 8px 0 0 0;
+    padding: 0;
+}
+
+.free-text-row {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 14px;
+}
+
+.free-text {
     flex-grow: 1;
     flex-shrink: 1;
+    margin: 0 10px 0 0;
+}
+
+.free-text > .unity-text-field__input,
+.free-text .unity-base-text-field__input {
+    min-height: 60px;
+    font-size: 24px;
+    border-width: 4px;
+    border-radius: 20px;
+    border-color: rgb(84, 90, 124);
+    background-color: rgb(244, 240, 232);
+    color: rgb(28, 30, 46);
+    padding: 6px 14px;
+    -unity-font: url("/Assets/Fonts/IBMPlexSansThaiLooped-Regular.ttf");
+}
+
+.send-button {
+    margin: 0;
+    min-height: 60px;
+    min-width: 110px;
+    background-color: rgb(102, 196, 232);
+    border-color: rgb(30, 116, 156);
+    color: rgb(6, 30, 44);
+}
+
+.dropped {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+}
+
+.dropped-text {
+    margin: 0;
+}
+
+.call-footer {
+    align-items: flex-end;
+    margin-top: 12px;
+}
+
+.call-footer .primary-button {
+    min-width: 320px;
+    margin: 0;
+}
+
+/* The call history, opened from the top bar: every line so far as chat bubbles. It sits in the
+   middle band (between the top bar and the dialogue box), left of the answers, so it never covers them. */
+.history {
+    position: absolute;
+    left: 24px;
+    top: 12px;
+    bottom: 0;
+    width: 680px;
+    background-color: rgba(14, 18, 34, 0.97);
+    border-width: 4px;
+    border-color: rgb(84, 90, 124);
+    border-radius: 26px;
 }
 
 .messages .unity-scroll-view__content-container {
     padding: 20px 20px 8px 20px;
+}
+
+/* Scroll bars: a slim rounded thumb in the panel colours instead of the default grey bar with arrows. */
+.unity-scroller--vertical {
+    width: 16px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    margin: 14px 4px 14px 0;
+}
+
+.unity-scroller--vertical .unity-scroller__low-button,
+.unity-scroller--vertical .unity-scroller__high-button {
+    display: none;
+}
+
+.unity-scroller--vertical .unity-base-slider__tracker {
+    background-color: rgba(255, 255, 255, 0.06);
+    border-width: 0;
+    border-radius: 6px;
+}
+
+.unity-scroller--vertical .unity-base-slider__dragger {
+    background-color: rgb(96, 104, 144);
+    border-width: 0;
+    border-radius: 6px;
+}
+
+.unity-scroller--vertical .unity-base-slider__dragger:hover {
+    background-color: rgb(255, 200, 61);
 }
 
 .bubble {
@@ -288,7 +598,6 @@ Button:active {
     align-self: flex-start;
     background-color: rgb(255, 128, 92);
     border-color: rgb(178, 66, 40);
-    color: rgb(44, 14, 6);
     border-bottom-left-radius: 6px;
 }
 
@@ -296,106 +605,24 @@ Button:active {
     align-self: flex-end;
     background-color: rgb(118, 226, 196);
     border-color: rgb(40, 140, 110);
-    color: rgb(8, 40, 32);
     border-bottom-right-radius: 6px;
-}
-
-.bubble.typing {
-    padding: 4px 22px 12px 22px;
-}
-
-.bubble.typing .bubble-text {
-    -unity-font: url("/Assets/Fonts/IBMPlexSansThaiLooped-Bold.ttf");
-    font-size: 30px;
 }
 
 .bubble.system {
     align-self: center;
     background-color: rgba(0, 0, 0, 0.35);
     border-color: rgba(0, 0, 0, 0.5);
-    color: rgb(220, 226, 240);
-    font-size: 20px;
-}
-
-.answer-area,
-.dropped,
-.call-footer {
-    flex-shrink: 0;
-    padding: 12px 20px 20px 20px;
-    border-top-width: 4px;
-    border-color: rgba(0, 0, 0, 0.35);
-    background-color: rgba(0, 0, 0, 0.25);
-}
-
-.answer-hint {
-    font-size: 20px;
-    color: rgb(200, 206, 226);
-    margin-bottom: 4px;
-}
-
-.free-text-row {
-    flex-direction: row;
-    align-items: center;
-    margin-top: 6px;
-}
-
-.free-text {
-    flex-grow: 1;
-    flex-shrink: 1;
-    margin: 0 10px 0 0;
-}
-
-.free-text > .unity-text-field__input,
-.free-text .unity-base-text-field__input {
-    min-height: 60px;
-    font-size: 24px;
-    border-width: 4px;
-    border-radius: 20px;
-    border-color: rgb(84, 90, 124);
-    background-color: rgb(244, 240, 232);
-    color: rgb(28, 30, 46);
-    padding: 6px 14px;
-    -unity-font: url("/Assets/Fonts/IBMPlexSansThaiLooped-Regular.ttf");
-}
-
-.send-button {
-    margin: 0;
-    min-height: 60px;
-    background-color: rgb(102, 196, 232);
-    border-color: rgb(30, 116, 156);
-    color: rgb(6, 30, 44);
-}
-
-.dropped {
-    align-items: center;
-}
-
-.secondary-button {
-    background-color: rgb(52, 58, 92);
-    border-color: rgb(28, 32, 56);
-    color: rgb(240, 242, 250);
-    min-height: 60px;
-}
-
-.secondary-button:hover {
-    background-color: rgb(66, 74, 112);
-}
-
-.button-row {
-    flex-direction: row;
-    flex-shrink: 0;
-}
-
-.button-row > .secondary-button {
-    flex-grow: 1;
-    flex-basis: 0;
-    margin: 8px 4px;
 }
 
 /* ---- News -------------------------------------------------------------------------------- */
 
 .news {
-    padding: 20px 20px 0 20px;
+    position: absolute;
+    left: 160px;
+    right: 160px;
+    top: 28px;
+    bottom: 28px;
+    padding: 20px 24px 0 24px;
 }
 
 .news-header {
@@ -530,26 +757,61 @@ Button:active {
 
 /* ---- Debrief ----------------------------------------------------------------------------- */
 
+/* The reveal: who really called, in the call-centre room. */
+/* Shorter than the caller on the phone, so his head stays clear of the caption above it. */
+.reveal-sprite {
+    left: 120px;
+    width: 420px;
+    height: 650px;
+}
+
+.reveal-sprite.real-smug { background-image: url("/Assets/Art/Characters/scammer_real_smug.png"); }
+.reveal-sprite.real-annoyed { background-image: url("/Assets/Art/Characters/scammer_real_annoyed.png"); }
+
+.reveal-caption {
+    position: absolute;
+    left: 28px;
+    top: 28px;
+    width: 600px;
+    font-size: 24px;
+    white-space: normal;
+    padding: 10px 20px 12px 20px;
+    background-color: rgba(18, 22, 40, 0.9);
+    border-width: 4px;
+    border-color: rgb(178, 66, 40);
+    border-radius: 22px;
+    color: rgb(255, 196, 176);
+}
+
+.debrief-guide {
+    position: absolute;
+    left: 24px;
+    bottom: 20px;
+    width: 620px;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.debrief-pip {
+    width: 190px;
+    height: 210px;
+}
+
+.say-bubble.left {
+    max-width: 400px;
+    margin: 0 0 120px 4px;
+}
+
 .debrief-scroll {
-    flex-grow: 1;
+    position: absolute;
+    right: 36px;
+    top: 28px;
+    bottom: 28px;
+    width: 720px;
 }
 
 .debrief {
-    padding-bottom: 48px;
-}
-
-.debrief-character {
-    width: 150px;
-    height: 165px;
-    margin-bottom: 12px;
-}
-
-.debrief-character.player {
-    background-image: url("/Assets/Art/Characters/pip.svg");
-}
-
-.debrief-character.scammer {
-    background-image: url("/Assets/Art/Characters/pip_scammer.svg");
+    padding: 24px 32px 40px 32px;
 }
 
 .lost {

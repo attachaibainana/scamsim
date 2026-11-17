@@ -1,0 +1,7 @@
+Visual-novel character sprite, an expression variant. Portrait image (1024x1536).
+
+The attached image (police_calm.png) is this character's base sprite. Draw the SAME man: same face, hair, khaki police-style uniform, fictional round badge, belt, trousers, art style, lighting, framing and scale (knee-up, figure filling the frame the same way, bottom of the figure touching the bottom edge). Change only the expression and pose.
+
+Expression and pose: stern and serious, a hard frown with lowered eyebrows and a tight mouth, eyes narrowed, as if warning someone that they are in trouble. He still holds the smartphone to his right ear with his right hand, and points his left index finger toward the viewer accusingly.
+
+Background: a perfectly flat, solid, pure green (#00FF00) chroma-key colour filling the entire background. No gradient, no floor, no cast shadow on the background, and no green anywhere on the character.

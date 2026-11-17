@@ -1,27 +1,41 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
-    <ui:ScrollView name="debrief-scroll" class="debrief-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden">
-        <ui:VisualElement name="debrief" class="screen debrief">
-            <ui:VisualElement name="debrief-character" class="character debrief-character" />
-            <ui:Label name="result" class="result-title bold" />
-            <ui:Label name="result-detail" class="body" />
-            <ui:Label name="lost" class="lost body" />
-            <ui:Label name="score" class="score bold" />
+    <ui:VisualElement name="debrief-screen" class="screen vn debrief-screen">
+        <!-- The reveal: the "police officer" was a scammer in a call-centre room. -->
+        <ui:VisualElement class="scene call-center" picking-mode="Ignore" />
+        <ui:VisualElement class="shade soft" picking-mode="Ignore" />
+        <ui:VisualElement name="reveal-sprite" class="sprite reveal-sprite" picking-mode="Ignore" />
+        <ui:Label class="reveal-caption bold" text="@debrief.reveal_caption" picking-mode="Ignore" />
 
-            <ui:Label class="section-title bold" text="@debrief.lessons" />
-            <ui:VisualElement name="lessons" class="lessons" />
-
-            <ui:Label class="section-title bold" text="@debrief.timeline" />
-            <ui:Label class="small legend" text="@debrief.legend" />
-            <ui:VisualElement name="timeline" class="timeline" />
-
-            <ui:VisualElement class="button-row">
-                <ui:Button name="export-csv" class="secondary-button" text="@debrief.export_csv" />
-                <ui:Button name="open-folder" class="secondary-button hidden" text="@debrief.open_folder" />
+        <ui:VisualElement class="debrief-guide" picking-mode="Ignore">
+            <ui:VisualElement name="debrief-pip" class="pip debrief-pip" picking-mode="Ignore" />
+            <ui:VisualElement class="say-bubble left" picking-mode="Ignore">
+                <ui:Label name="pip-says" class="say-text" />
             </ui:VisualElement>
-            <ui:Label name="export-status" class="small log-path" />
-            <ui:Button name="play-again" class="primary-button" text="@debrief.play_again" />
-            <ui:Button name="home" class="secondary-button" text="@debrief.home" />
-            <ui:Label name="log-path" class="small log-path" />
         </ui:VisualElement>
-    </ui:ScrollView>
+
+        <ui:ScrollView name="debrief-scroll" class="panel debrief-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden">
+            <ui:VisualElement name="debrief" class="debrief">
+                <ui:Label name="result" class="result-title bold" />
+                <ui:Label name="result-detail" class="body" />
+                <ui:Label name="lost" class="lost body" />
+                <ui:Label name="score" class="score bold" />
+
+                <ui:Label class="section-title bold" text="@debrief.lessons" />
+                <ui:VisualElement name="lessons" class="lessons" />
+
+                <ui:Label class="section-title bold" text="@debrief.timeline" />
+                <ui:Label class="small legend" text="@debrief.legend" />
+                <ui:VisualElement name="timeline" class="timeline" />
+
+                <ui:VisualElement class="button-row">
+                    <ui:Button name="export-csv" class="secondary-button" text="@debrief.export_csv" />
+                    <ui:Button name="open-folder" class="secondary-button hidden" text="@debrief.open_folder" />
+                </ui:VisualElement>
+                <ui:Label name="export-status" class="small log-path" />
+                <ui:Button name="play-again" class="primary-button" text="@debrief.play_again" />
+                <ui:Button name="home" class="secondary-button" text="@debrief.home" />
+                <ui:Label name="log-path" class="small log-path" />
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
 </ui:UXML>

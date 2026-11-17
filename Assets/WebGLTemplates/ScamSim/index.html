@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no">
+    <title>{{{ PRODUCT_NAME }}}</title>
+    <style>
+      /* The canvas fills the window. The game keeps its own 16:9 stage inside it (UI Toolkit
+         PanelSettings: Expand), so any window shape shows the whole stage with dark bars. */
+      /* 100% rather than 100vh: on phones 100vh includes the area behind the browser toolbar,
+         which would hide the bottom of the stage. */
+      html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #101321; }
+      #unity-canvas { display: block; width: 100%; height: 100%; background: #101321; outline: none; }
+      #loading { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center;
+                 justify-content: center; gap: 18px; color: #f5f7fa;
+                 font-family: "IBM Plex Sans Thai Looped", "Leelawadee UI", "Noto Sans Thai", sans-serif; }
+      #loading h1 { margin: 0; font-size: 34px; }
+      #bar { width: min(420px, 70vw); height: 14px; border: 3px solid #545a7c; border-radius: 12px; overflow: hidden; }
+      #bar-fill { width: 0; height: 100%; background: #ffc83d; transition: width 0.2s; }
+      #error { display: none; max-width: 640px; padding: 0 20px; text-align: center; color: #ffaa96; font-size: 18px; }
+    </style>
+  </head>
+  <body>
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+    <div id="loading">
+      <h1>{{{ PRODUCT_NAME }}}</h1>
+      <div id="bar"><div id="bar-fill"></div></div>
+      <div id="error"></div>
+    </div>
+    <script src="Build/{{{ LOADER_FILENAME }}}"></script>
+    <script>
+      var loading = document.getElementById("loading");
+      var fill = document.getElementById("bar-fill");
+
+      createUnityInstance(document.getElementById("unity-canvas"), {
+        arguments: [],
+#if PROGRESSIVE_ASSET_LOADING
+        primaryDataUrls: {{{ JSON.stringify(PRIMARY_DATA_FILES) }}},
+        secondaryDataUrls: {{{ JSON.stringify(SECONDARY_DATA_FILES) }}},
+#else
+        dataUrl: "Build/{{{ DATA_FILENAME }}}",
+#endif
+        frameworkUrl: "Build/{{{ FRAMEWORK_FILENAME }}}",
+#if USE_WASM
+        codeUrl: "Build/{{{ CODE_FILENAME }}}",
+#endif
+#if SYMBOLS_FILENAME
+        symbolsUrl: "Build/{{{ SYMBOLS_FILENAME }}}",
+#endif
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: {{{ JSON.stringify(COMPANY_NAME) }}},
+        productName: {{{ JSON.stringify(PRODUCT_NAME) }}},
+        productVersion: {{{ JSON.stringify(PRODUCT_VERSION) }}}
+      }, function (progress) {
+        fill.style.width = Math.round(progress * 100) + "%";
+      }).then(function () {
+        loading.style.display = "none";
+        document.getElementById("unity-canvas").focus();
+      }).catch(function (message) {
+        // No alert(): a modal dialog would block the page. Show the reason in place.
+        var error = document.getElementById("error");
+        error.textContent = "เปิดเกมไม่ได้: " + message;
+        error.style.display = "block";
+        document.getElementById("bar").style.display = "none";
+      });
+    </script>
+  </body>
+</html>
